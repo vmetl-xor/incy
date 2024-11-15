@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Parent project coordinates -->
+    <groupId>com.vmetl</groupId>
+    <artifactId>incy</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Incy Web Crawler</name>
+    <description>A Maven multi-module Spring Boot project with 'api' and 'crawler' modules</description>
+
+    <!-- Define modules -->
+    <modules>
+        <module>api</module>
+        <module>crawler</module>
+    </modules>
+
+    <!-- Properties -->
+    <properties>
+        <java.version>21</java.version>
+        <spring-boot.version>3.3.5</spring-boot.version>
+    </properties>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Import Spring Boot dependencies -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Plugin Management -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Spring Boot Maven Plugin -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+
+                <!-- Maven Compiler Plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+
+                <!-- Additional common plugins can be added here -->
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>
