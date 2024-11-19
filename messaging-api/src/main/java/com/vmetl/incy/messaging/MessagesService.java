@@ -1,8 +1,8 @@
 package com.vmetl.incy.messaging;
 
-public interface MessagesService {
+public interface MessagesService <K, V> {
 
 
-    void sendMessage(Message message);
+    void sendMessage(Message<K, V> message);
 
 }

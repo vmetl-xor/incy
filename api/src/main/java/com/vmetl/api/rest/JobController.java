@@ -1,6 +1,9 @@
 package com.vmetl.api.rest;
 
 
+import com.vmetl.api.service.JobService;
+import com.vmetl.incy.messaging.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +15,19 @@ import java.util.List;
 @RequestMapping("/jobs")
 public class JobController {
 
+    private final JobService jobService;
+
+    @Autowired
+    public JobController(JobService jobService) {
+        this.jobService = jobService;
+    }
+
+
     @GetMapping(value = "/{id}")
-    public Foo findById(@PathVariable("id") Long id) {
-        return new Foo("someId", "someName");
+    public Message<String, String> findById(@PathVariable("id") Long id) {
+        return jobService.sendMessage(id + "");
+
+        //        return new Foo("someId", "someName");
 //        return RestPreconditions.checkFound(service.findById(id));
     }
 

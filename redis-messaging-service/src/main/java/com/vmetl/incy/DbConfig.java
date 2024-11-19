@@ -1,10 +1,7 @@
 package com.vmetl.incy;
 
-import com.vmetl.incy.messaging.MessageConsumer;
-import com.vmetl.incy.messaging.RedisTaskProcessor;
-import org.springframework.context.annotation.Bean;
+
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 @Configuration
 public class DbConfig {
@@ -18,9 +15,4 @@ public class DbConfig {
 //        return template;
 //    }
 
-    @Bean
-    @Scope("prototype")
-    public RedisTaskProcessor streamConsumer(String consumerName, MessageConsumer messageConsumer) {
-        return new RedisTaskProcessor(consumerName, messageConsumer);
-    }
 }

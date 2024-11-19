@@ -12,7 +12,7 @@ import java.util.Map;
 public class SimpleTaskProducer {
 
     @Autowired
-    private MessagesService messagesService;
+    private MessagesService<String, String> messagesService;
 
     public void produceMessages() {
         for (int i = 1; i <= 20; i++) {
@@ -20,7 +20,7 @@ public class SimpleTaskProducer {
             Map<String, String> messagePayload = new HashMap<>();
             messagePayload.put("message", "task" + i);
 
-            messagesService.sendMessage(new Message<>("task" + i, messagePayload));
+            messagesService.sendMessage(Message.of("task" + i, messagePayload));
         }
     }
 

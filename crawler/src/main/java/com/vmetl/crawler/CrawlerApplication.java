@@ -17,9 +17,9 @@ public class CrawlerApplication {
         LOG.info("STARTING THE APPLICATION");
         ConfigurableApplicationContext context = SpringApplication.run(CrawlerApplication.class, args);
 
-        // Start the producer
-        SimpleTaskProducer producer = context.getBean(SimpleTaskProducer.class);
-        producer.produceMessages();
+//        // Start the producer
+//        SimpleTaskProducer producer = context.getBean(SimpleTaskProducer.class);
+//        producer.produceMessages();
 
         LOG.info("APPLICATION FINISHED");
     }

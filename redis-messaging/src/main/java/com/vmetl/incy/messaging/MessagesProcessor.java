@@ -1,58 +1,38 @@
 package com.vmetl.incy.messaging;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.ReadOffset;
-import org.springframework.data.redis.connection.stream.RecordId;
-import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Component
-public class RedisMessagesService implements MessagesService {
+import static com.vmetl.incy.messaging.RedisMessagesService.STREAM_KEY;
 
-    private static final String STREAM_KEY = "mystream";
+@Component
+public class MessagesProcessor {
+
     private static final String GROUP_NAME = "mygroup";
     private static final int NUMBER_OF_CONSUMERS = 10;
 
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Autowired
-    private ObjectProvider<RedisTaskProcessor> taskProcessorProvider;
+    public MessagesProcessor(MessageConsumer messageConsumer, ObjectProvider<RedisTaskProcessor> taskProcessorProvider,
+                             RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
 
-    @Autowired
-    private MessageConsumer messageConsumer;
-
-    ExecutorService executors = Executors.newFixedThreadPool(NUMBER_OF_CONSUMERS);
-
-    public RedisMessagesService() {
         createConsumerGroup();
-    }
-
-
-    @PostConstruct
-    public void start() {
 
         for (int i = 1; i <= NUMBER_OF_CONSUMERS; i++) {
             String consumerName = "consumer-" + i;
             RedisTaskProcessor consumer = taskProcessorProvider.getObject(consumerName, messageConsumer);
 
+            ExecutorService executors = Executors.newFixedThreadPool(NUMBER_OF_CONSUMERS);
             executors.submit(consumer);
         }
-    }
-
-    @Override
-    public void sendMessage(Message message) {
-        RecordId recordId = redisTemplate.opsForStream().add(
-                StreamRecords.mapBacked(message.getPayload()).withStreamKey(STREAM_KEY)
-        );
-
-        System.out.println("Produced message with ID: " + recordId.getValue());
     }
 
     private void createConsumerGroup() {

@@ -19,6 +19,7 @@
         <module>crawler</module>
         <module>messaging-api</module>
         <module>redis-messaging</module>
+        <module>redis-messaging-service</module>
     </modules>
 
     <!-- Properties -->

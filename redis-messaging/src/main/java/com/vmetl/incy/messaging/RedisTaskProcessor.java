@@ -23,7 +23,6 @@ public class RedisTaskProcessor implements Runnable {
     private String consumerName;
     private final MessageConsumer consumer;
 
-    @Autowired
     public RedisTaskProcessor(String consumerName, MessageConsumer consumer) {
         this.consumerName = consumerName;
         this.consumer = consumer;
@@ -32,6 +31,7 @@ public class RedisTaskProcessor implements Runnable {
     @Override
     public void run() {
 
+        System.out.println("Starting task processor " + consumerName);
         while (true) {
             try {
                 Consumer consumer = Consumer.from(GROUP_NAME, consumerName);
@@ -70,7 +70,7 @@ public class RedisTaskProcessor implements Runnable {
     private void processMessage(Map<Object, Object> message) {
         // Simulate message processing
         try {
-            consumer.consume(new Message(UUID.randomUUID().toString(), message));
+            consumer.consume(Message.of(UUID.randomUUID().toString(), message));
             Thread.sleep(2000); // Simulate processing time
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

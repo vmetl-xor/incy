@@ -9,6 +9,7 @@
         <module name="api" />
         <module name="redis-messaging" />
         <module name="crawler" />
+        <module name="redis-messaging-service" />
         <module name="messaging-api" />
       </profile>
     </annotationProcessing>
