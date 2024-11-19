@@ -15,24 +15,21 @@
     <properties>
         <java.version>21</java.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-jdbc</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
-<!--                <dependency>-->
-<!--                    <groupId>org.springframework.boot</groupId>-->
-<!--                    <artifactId>spring-boot-starter-data-jdbc</artifactId>-->
-<!--                </dependency>-->
-<!--                <dependency>-->
-<!--                    <groupId>org.springframework.boot</groupId>-->
-<!--                    <artifactId>spring-boot-starter-web</artifactId>-->
-<!--                </dependency>-->
         <!--        <dependency>-->
         <!--            <groupId>org.springframework.boot</groupId>-->
         <!--            <artifactId>spring-boot-starter-webflux</artifactId>-->
@@ -67,7 +64,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.vmetl.api.ApiApplication</mainClass>
+                    <mainClass>com.vmetl.crawler.CrawlerApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

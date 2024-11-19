@@ -11,12 +11,14 @@
     <packaging>pom</packaging>
 
     <name>Incy Web Crawler</name>
-    <description>A Maven multi-module Spring Boot project with 'api' and 'crawler' modules</description>
+    <description>Main Project</description>
 
     <!-- Define modules -->
     <modules>
         <module>api</module>
         <module>crawler</module>
+        <module>messaging-api</module>
+        <module>redis-messaging</module>
     </modules>
 
     <!-- Properties -->

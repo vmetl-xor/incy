@@ -6,8 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="crawler" />
         <module name="api" />
+        <module name="redis-messaging" />
+        <module name="crawler" />
+        <module name="messaging-api" />
       </profile>
     </annotationProcessing>
   </component>

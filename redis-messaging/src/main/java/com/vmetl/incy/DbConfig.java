@@ -1,11 +1,14 @@
-package com.vmetl.api.data;
+package com.vmetl.incy;
 
-import com.vmetl.api.messaging.TaskProcessor;
+import com.vmetl.incy.messaging.MessageConsumer;
+import com.vmetl.incy.messaging.RedisTaskProcessor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 @Configuration
+@ComponentScan
 public class DbConfig {
 //    @Bean
 //    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory connectionFactory) {
@@ -18,7 +21,7 @@ public class DbConfig {
 
     @Bean
     @Scope("prototype")
-    public TaskProcessor streamConsumer(String consumerName) {
-        return new TaskProcessor(consumerName);
+    public RedisTaskProcessor streamConsumer(String consumerName, MessageConsumer messageConsumer) {
+        return new RedisTaskProcessor(consumerName, messageConsumer);
     }
 }

@@ -1,4 +1,4 @@
-package com.vmetl.api.messaging;
+package com.vmetl.incy.messaging;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.MapRecord;
@@ -11,8 +11,9 @@ import org.springframework.data.redis.connection.stream.Consumer;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-public class TaskProcessor implements Runnable {
+public class RedisTaskProcessor implements Runnable {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -20,20 +21,19 @@ public class TaskProcessor implements Runnable {
     private static final String STREAM_KEY = "mystream";
     private static final String GROUP_NAME = "mygroup";
     private String consumerName;
+    private final MessageConsumer consumer;
 
-    public TaskProcessor(String consumerName) {
+    @Autowired
+    public RedisTaskProcessor(String consumerName, MessageConsumer consumer) {
         this.consumerName = consumerName;
+        this.consumer = consumer;
     }
 
     @Override
     public void run() {
-        // Create consumer group if not exists
-        createConsumerGroup();
 
         while (true) {
             try {
-
-
                 Consumer consumer = Consumer.from(GROUP_NAME, consumerName);
                 StreamReadOptions options = StreamReadOptions.empty().count(1).block(Duration.ofSeconds(2));
                 StreamOffset<String> offset = StreamOffset.create(STREAM_KEY, ReadOffset.lastConsumed());
@@ -67,20 +67,10 @@ public class TaskProcessor implements Runnable {
         }
     }
 
-    private void createConsumerGroup() {
-        try {
-            // Create the consumer group if it doesn't exist
-            redisTemplate.opsForStream().createGroup(STREAM_KEY, ReadOffset.latest(), GROUP_NAME);
-            System.out.println("Consumer group '" + GROUP_NAME + "' created.");
-        } catch (Exception e) {
-            // Group already exists
-            System.out.println("Consumer group '" + GROUP_NAME + "' already exists.");
-        }
-    }
-
     private void processMessage(Map<Object, Object> message) {
         // Simulate message processing
         try {
+            consumer.consume(new Message(UUID.randomUUID().toString(), message));
             Thread.sleep(2000); // Simulate processing time
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
