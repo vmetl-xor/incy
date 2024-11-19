@@ -21,9 +21,9 @@ public class RedisTaskProcessor implements Runnable {
     private static final String STREAM_KEY = "mystream";
     private static final String GROUP_NAME = "mygroup";
     private String consumerName;
-    private final MessageConsumer consumer;
+    private final MessageConsumer<Object, Object> consumer;
 
-    public RedisTaskProcessor(String consumerName, MessageConsumer consumer) {
+    public RedisTaskProcessor(String consumerName, MessageConsumer<Object, Object> consumer) {
         this.consumerName = consumerName;
         this.consumer = consumer;
     }
