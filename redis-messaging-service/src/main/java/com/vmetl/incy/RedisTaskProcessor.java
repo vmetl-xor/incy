@@ -1,5 +1,8 @@
-package com.vmetl.incy.messaging;
+package com.vmetl.incy;
 
+import com.vmetl.incy.messaging.Message;
+import com.vmetl.incy.messaging.MessageConsumer;
+import com.vmetl.incy.task.TaskProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
@@ -13,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class RedisTaskProcessor implements Runnable {
+public class RedisTaskProcessor implements TaskProcessor {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;

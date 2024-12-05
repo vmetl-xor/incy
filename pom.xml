@@ -18,8 +18,9 @@
         <module>api</module>
         <module>crawler</module>
         <module>messaging-api</module>
-        <module>redis-messaging</module>
+        <module>messaging-core</module>
         <module>redis-messaging-service</module>
+        <module>kafka-messaging-service</module>
     </modules>
 
     <!-- Properties -->
