@@ -24,7 +24,6 @@ public class ConsumerGroupInitializer implements InitializingBean {
             // Group already exists
             System.out.println("Consumer group '" + GROUP_NAME + "' already exists.");
         }
-
     }
 
     @Override

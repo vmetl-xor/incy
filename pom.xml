@@ -21,6 +21,7 @@
         <module>messaging-core</module>
         <module>redis-messaging-service</module>
         <module>kafka-messaging-service</module>
+        <module>db-service</module>
     </modules>
 
     <!-- Properties -->

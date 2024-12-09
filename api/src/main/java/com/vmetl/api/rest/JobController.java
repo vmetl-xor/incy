@@ -1,6 +1,7 @@
 package com.vmetl.api.rest;
 
 
+import com.vmetl.api.service.DbService;
 import com.vmetl.api.service.JobService;
 import com.vmetl.incy.messaging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,18 @@ import java.util.List;
 public class JobController {
 
     private final JobService jobService;
+    private final DbService dbService;
 
     @Autowired
-    public JobController(JobService jobService) {
+    public JobController(JobService jobService, DbService dbService) {
         this.jobService = jobService;
+        this.dbService = dbService;
     }
 
 
     @GetMapping(value = "/{id}")
     public Message<String, String> findById(@PathVariable("id") Long id) {
+        dbService.addSite("www." + id + ".com");
         return jobService.sendMessage(id + "");
 
         //        return new Foo("someId", "someName");

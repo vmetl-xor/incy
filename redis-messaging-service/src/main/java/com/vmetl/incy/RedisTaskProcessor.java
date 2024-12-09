@@ -72,11 +72,6 @@ public class RedisTaskProcessor implements TaskProcessor {
 
     private void processMessage(Map<Object, Object> message) {
         // Simulate message processing
-        try {
-            consumer.consume(Message.of(UUID.randomUUID().toString(), message));
-            Thread.sleep(2000); // Simulate processing time
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        consumer.consume(Message.of(UUID.randomUUID().toString(), message));
     }
 }

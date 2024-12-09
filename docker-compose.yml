@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  redis:
+    image: "redis:latest"
+    container_name: "redis-local"
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: "bitnami/postgresql:latest"
+    container_name: "postgres-local"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-local:/bitnami/postgresql
+
+volumes:
+  postgres-local:
+  # optional config here, can leave empty
