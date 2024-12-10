@@ -80,3 +80,4 @@ $RECYCLE.BIN/
 # Other files generated at runtime
 /*.log
 /*.log.*
+/.idea/
