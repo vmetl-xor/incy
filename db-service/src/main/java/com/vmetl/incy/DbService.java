@@ -1,10 +1,11 @@
-package com.vmetl.api.service;
+package com.vmetl.incy;
 
-import com.vmetl.api.db.SiteRepository;
+import com.vmetl.incy.db.SiteRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DbService {
+
 
     private final SiteRepository siteRepository;
 

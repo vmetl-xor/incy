@@ -1,8 +1,8 @@
 package com.vmetl.api.rest;
 
 
-import com.vmetl.api.service.DbService;
 import com.vmetl.api.service.JobService;
+import com.vmetl.incy.DbService;
 import com.vmetl.incy.messaging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
