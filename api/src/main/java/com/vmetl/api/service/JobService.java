@@ -25,4 +25,8 @@ public class JobService {
         return newMessage;
     }
 
+    public void stopAllProcessors() {
+        messagesService.sendShutdownMessage();
+    }
+
 }

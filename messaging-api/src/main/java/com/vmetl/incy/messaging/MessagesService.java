@@ -4,5 +4,6 @@ public interface MessagesService <K, V> {
 
 
     void sendMessage(Message<K, V> message);
+    void sendShutdownMessage();
 
 }

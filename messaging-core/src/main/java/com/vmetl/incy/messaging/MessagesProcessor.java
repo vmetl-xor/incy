@@ -12,16 +12,17 @@ import java.util.concurrent.Executors;
 public class MessagesProcessor {
 
     private static final int NUMBER_OF_CONSUMERS = 10;
+    private final ExecutorService executors;
 
     @Autowired
-    public MessagesProcessor(MessageConsumer messageConsumer, ObjectProvider<TaskProcessor> taskProcessorProvider) {
+    public MessagesProcessor(MessageConsumer<Object, Object> messageConsumer, ObjectProvider<TaskProcessor> taskProcessorProvider) {
 
+        executors = Executors.newFixedThreadPool(NUMBER_OF_CONSUMERS);
 
         for (int i = 1; i <= NUMBER_OF_CONSUMERS; i++) {
             String consumerName = "consumer-" + i;
             TaskProcessor consumer = taskProcessorProvider.getObject(consumerName, messageConsumer);
 
-            ExecutorService executors = Executors.newFixedThreadPool(NUMBER_OF_CONSUMERS);
             executors.submit(consumer);
         }
     }

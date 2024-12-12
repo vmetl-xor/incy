@@ -35,6 +35,15 @@ public class JobController {
 //        return RestPreconditions.checkFound(service.findById(id));
     }
 
+    @GetMapping(value = "/stop")
+    public String stopAll() {
+        jobService.stopAllProcessors();
+
+        return "All stopped";
+        //        return new Foo("someId", "someName");
+//        return RestPreconditions.checkFound(service.findById(id));
+    }
+
     @GetMapping
     public List<Foo> findById() {
         return List.of(new Foo("someId", "someName"), new Foo("someId2", "someName2"));
