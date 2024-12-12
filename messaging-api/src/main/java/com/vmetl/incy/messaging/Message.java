@@ -3,10 +3,11 @@ package com.vmetl.incy.messaging;
 import java.util.Map;
 
 public class Message<K, V> {
-    private String id;
-    private Map<K, V> payload;
+    private final String id;
+    private final Map<K, V> payload;
 
     private Message(String id, Map<K, V> payload) {
+        this.id = id;
         this.payload = payload;
     }
 

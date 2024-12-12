@@ -19,7 +19,7 @@ public class JobService {
 
     public Message<String, String> sendMessage(String message) {
         String id = UUID.randomUUID().toString();
-        Message<String, String> newMessage = Message.of(id, Map.of("task", message));
+        Message<String, String> newMessage = Message.of(id, Map.of("site", message));
         messagesService.sendMessage(newMessage);
 
         return newMessage;

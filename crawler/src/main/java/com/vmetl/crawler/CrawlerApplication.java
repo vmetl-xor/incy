@@ -1,6 +1,5 @@
 package com.vmetl.crawler;
 
-import com.vmetl.crawler.messaging.SimpleTaskProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

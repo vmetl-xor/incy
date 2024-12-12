@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class DbService {
 
-
     private final SiteRepository siteRepository;
 
     public DbService(SiteRepository siteRepository) {
@@ -15,6 +14,10 @@ public class DbService {
 
     public void addSite(String name) {
         siteRepository.addSite(name);
+    }
+
+    public void updateSiteStatistics(SiteInformation siteInformation) {
+
     }
 
 }

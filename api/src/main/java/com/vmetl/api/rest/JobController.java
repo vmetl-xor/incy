@@ -29,7 +29,7 @@ public class JobController {
     @GetMapping(value = "/{id}")
     public Message<String, String> findById(@PathVariable("id") Long id) {
         dbService.addSite("www." + id + ".com");
-        return jobService.sendMessage(id + "");
+        return jobService.sendMessage("http://www.example.com");
 
         //        return new Foo("someId", "someName");
 //        return RestPreconditions.checkFound(service.findById(id));

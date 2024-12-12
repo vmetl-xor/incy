@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class RedisMessagesService implements MessagesService<String, String> {
     Logger log = LoggerFactory.getLogger(RedisMessagesService.class);
 
-    public static final String STREAM_KEY = "mystream";
+    public static final String STREAM_KEY = "stream_1";
 
     @Autowired
     private ChannelTopic topic;

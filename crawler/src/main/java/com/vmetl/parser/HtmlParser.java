@@ -1,5 +1,6 @@
 package com.vmetl.parser;
 
+import com.vmetl.incy.SiteInformation;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;

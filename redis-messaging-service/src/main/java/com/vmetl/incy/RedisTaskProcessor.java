@@ -28,7 +28,7 @@ public class RedisTaskProcessor implements TaskProcessor {
     @Autowired
     private ProcessorsRunningState runningState;
 
-    private static final String STREAM_KEY = "mystream";
+    private static final String STREAM_KEY = "stream_1";
     private static final String GROUP_NAME = "mygroup";
     private String consumerName;
     private final MessageConsumer<Object, Object> consumer;
@@ -62,7 +62,7 @@ public class RedisTaskProcessor implements TaskProcessor {
                         log.info("{} processing message ID: {}, body: {}", consumerName, messageId, body);
 
                         // Process the message
-                        processMessage(body);
+                        processMessage(Message.of(messageId, body));
 
                         // Acknowledge the message
                         redisTemplate.opsForStream().acknowledge(GROUP_NAME, message);
@@ -79,8 +79,7 @@ public class RedisTaskProcessor implements TaskProcessor {
         log.info("Stopping task processor {}", consumerName);
     }
 
-    private void processMessage(Map<Object, Object> message) {
-        // Simulate message processing
-        consumer.consume(Message.of(UUID.randomUUID().toString(), message));
+    private void processMessage(Message<Object, Object> message) {
+        consumer.consume(message);
     }
 }
