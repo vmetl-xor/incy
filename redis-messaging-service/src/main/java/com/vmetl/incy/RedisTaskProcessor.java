@@ -3,6 +3,8 @@ package com.vmetl.incy;
 import com.vmetl.incy.messaging.Message;
 import com.vmetl.incy.messaging.MessageConsumer;
 import com.vmetl.incy.task.TaskProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
@@ -18,8 +20,13 @@ import java.util.UUID;
 
 public class RedisTaskProcessor implements TaskProcessor {
 
+    Logger log = LoggerFactory.getLogger(RedisTaskProcessor.class);
+
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    private ProcessorsRunningState runningState;
 
     private static final String STREAM_KEY = "mystream";
     private static final String GROUP_NAME = "mygroup";
@@ -34,8 +41,8 @@ public class RedisTaskProcessor implements TaskProcessor {
     @Override
     public void run() {
 
-        System.out.println("Starting task processor " + consumerName);
-        while (true) {
+        log.info("Starting task processor {}", consumerName);
+        while (runningState.isRunning()) {
             try {
                 Consumer consumer = Consumer.from(GROUP_NAME, consumerName);
                 StreamReadOptions options = StreamReadOptions.empty().count(1).block(Duration.ofSeconds(2));
@@ -52,7 +59,7 @@ public class RedisTaskProcessor implements TaskProcessor {
                         String messageId = message.getId().getValue();
                         Map<Object, Object> body = message.getValue();
 
-                        System.out.println(consumerName + " processing message ID: " + messageId + ", body: " + body);
+                        log.info("{} processing message ID: {}, body: {}", consumerName, messageId, body);
 
                         // Process the message
                         processMessage(body);
@@ -62,12 +69,14 @@ public class RedisTaskProcessor implements TaskProcessor {
                     }
                 } else {
                     // No messages, consumer will continue blocking
-                    System.out.println(consumerName + " found no messages. Waiting...");
+                    log.info("{} found no messages. Waiting...", consumerName);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("An exception occurred during processing", e);
             }
         }
+
+        log.info("Stopping task processor {}", consumerName);
     }
 
     private void processMessage(Map<Object, Object> message) {
