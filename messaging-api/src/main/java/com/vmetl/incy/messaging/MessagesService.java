@@ -1,9 +1,11 @@
 package com.vmetl.incy.messaging;
 
-public interface MessagesService <K, V> {
+import java.util.function.Function;
+
+public interface MessagesService {
 
 
-    void sendMessage(Message<K, V> message);
+    void sendMessage(Message message, Function<Object, Object> postAction);
     void sendShutdownMessage();
 
 }

@@ -15,7 +15,7 @@ public class MessagesProcessor {
     private final ExecutorService executors;
 
     @Autowired
-    public MessagesProcessor(MessageConsumer<Object, Object> messageConsumer, ObjectProvider<TaskProcessor> taskProcessorProvider) {
+    public MessagesProcessor(MessageConsumer messageConsumer, ObjectProvider<TaskProcessor> taskProcessorProvider) {
 
         executors = Executors.newFixedThreadPool(NUMBER_OF_CONSUMERS);
 

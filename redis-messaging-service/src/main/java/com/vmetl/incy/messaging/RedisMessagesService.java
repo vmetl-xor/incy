@@ -9,8 +9,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Function;
+
 @Component
-public class RedisMessagesService implements MessagesService<String, String> {
+public class RedisMessagesService implements MessagesService {
     Logger log = LoggerFactory.getLogger(RedisMessagesService.class);
 
     public static final String STREAM_KEY = "stream_1";
@@ -19,15 +21,17 @@ public class RedisMessagesService implements MessagesService<String, String> {
     private ChannelTopic topic;
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public void sendMessage(Message<String, String> message) {
+    public void sendMessage(Message message, Function<Object, Object> postAction) {
         RecordId recordId = redisTemplate.opsForStream().add(
                 StreamRecords.mapBacked(message.getPayload()).withStreamKey(STREAM_KEY)
         );
+        String site = MessageUtil.getSite(message);
+        postAction.apply(site);
 
-        log.info("Produced message with ID: {}", recordId.getValue());
+        log.info("Produced message with ID: {}, site: {}", recordId.getValue(), site);
     }
 
     @Override

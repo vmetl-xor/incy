@@ -17,13 +17,14 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class RedisTaskProcessor implements TaskProcessor {
 
     Logger log = LoggerFactory.getLogger(RedisTaskProcessor.class);
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private ProcessorsRunningState runningState;
@@ -31,9 +32,9 @@ public class RedisTaskProcessor implements TaskProcessor {
     private static final String STREAM_KEY = "stream_1";
     private static final String GROUP_NAME = "mygroup";
     private String consumerName;
-    private final MessageConsumer<Object, Object> consumer;
+    private final MessageConsumer consumer;
 
-    public RedisTaskProcessor(String consumerName, MessageConsumer<Object, Object> consumer) {
+    public RedisTaskProcessor(String consumerName, MessageConsumer consumer) {
         this.consumerName = consumerName;
         this.consumer = consumer;
     }
@@ -57,12 +58,20 @@ public class RedisTaskProcessor implements TaskProcessor {
                 if (messages != null && !messages.isEmpty()) {
                     for (MapRecord<String, Object, Object> message : messages) {
                         String messageId = message.getId().getValue();
-                        Map<Object, Object> body = message.getValue();
+                        Map<String, Object> body = message.getValue().entrySet().stream().
+                                collect(Collectors.toMap(objectObjectEntry -> objectObjectEntry.getKey().toString(), Map.Entry::getValue));
 
-                        log.info("{} processing message ID: {}, body: {}", consumerName, messageId, body);
+                        log.debug("{} processing message ID: {}, body: {}", consumerName, messageId, body);
+
+                        Message newMessage =
+                                new Message.MessageBuilder().
+                                        setId(messageId).
+                                        addDepth(0).
+                                        setPayload(body).
+                                        build();
 
                         // Process the message
-                        processMessage(Message.of(messageId, body));
+                        processMessage(newMessage);
 
                         // Acknowledge the message
                         redisTemplate.opsForStream().acknowledge(GROUP_NAME, message);
@@ -79,7 +88,7 @@ public class RedisTaskProcessor implements TaskProcessor {
         log.info("Stopping task processor {}", consumerName);
     }
 
-    private void processMessage(Message<Object, Object> message) {
+    private void processMessage(Message message) {
         consumer.consume(message);
     }
 }
