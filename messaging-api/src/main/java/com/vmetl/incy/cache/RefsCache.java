@@ -1,4 +1,4 @@
-package com.vmetl.crawler.cache;
+package com.vmetl.incy.cache;
 
 public interface RefsCache {
     boolean exists(String ref);

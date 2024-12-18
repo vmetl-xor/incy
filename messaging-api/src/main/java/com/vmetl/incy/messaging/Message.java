@@ -13,7 +13,7 @@ public class Message {
     private Message(MessageBuilder builder) {
         this.id = builder.id;
         this.payload = builder.payload;
-        payload.put(GLOBAL_DEPTH, 2);
+        payload.put(GLOBAL_DEPTH, 3);
     }
 
     public Map<String, Object> getPayload() {

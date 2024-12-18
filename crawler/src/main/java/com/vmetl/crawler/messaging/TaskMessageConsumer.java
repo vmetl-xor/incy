@@ -1,6 +1,6 @@
 package com.vmetl.crawler.messaging;
 
-import com.vmetl.crawler.cache.RefsCache;
+import com.vmetl.incy.cache.RefsCache;
 import com.vmetl.incy.DbService;
 import com.vmetl.incy.messaging.Message;
 import com.vmetl.incy.messaging.MessageConsumer;
@@ -38,7 +38,8 @@ public class TaskMessageConsumer implements MessageConsumer {
 
         boolean shouldProcessDeeper = MessageUtil.getCurrentRefDepth(message) < MessageUtil.getGlobalRefDepth(message);
 
-        Optional<SiteInformation> siteInfo = HtmlParser.parse(MessageUtil.getSite(message));
+        String siteName = MessageUtil.getSite(message);
+        Optional<SiteInformation> siteInfo = HtmlParser.parse(siteName);
 
         siteInfo.ifPresent(siteInformation -> {
 
@@ -62,7 +63,11 @@ public class TaskMessageConsumer implements MessageConsumer {
                 log.info("REACHED MAX DEPTH OF {}, terminating", MessageUtil.getCurrentRefDepth(message));
             }
 
-            dbService.updateSiteStatistics(siteInformation);
+            Map<String, Integer> wordStats = siteInformation.getWordsFrequency();
+
+            dbService.getSiteIdByName(siteName);
+            dbService.updateSiteStatistics(1, wordStats);
+
         });
     }
 }

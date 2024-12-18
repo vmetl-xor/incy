@@ -3,28 +3,30 @@ package com.vmetl.incy.db;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 @Repository
-public class SiteRepositoryImpl implements SiteRepository {
+public class WordStatsRepositoryImpl implements WordStatsRepository {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    public SiteRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public WordStatsRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public boolean addSite(String name) {
-    }
+    @Transactional
+    public boolean updateWordsStats(Map<String, Integer> dictionary) {
 
-    @Override
-    public boolean updateWordsStats(List<String> words) {
+
+
         jdbcTemplate.batchUpdate("INSERT INTO site_statistics (site_id, word_occurrences, word_id) " +
                         "VALUES (?, ?, ?)",
                 List.of(),

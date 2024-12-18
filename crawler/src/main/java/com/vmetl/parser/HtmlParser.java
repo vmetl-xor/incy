@@ -36,7 +36,7 @@ public class HtmlParser {
 //        List<String> links = new ArrayList<>();
 
         List<String> internalRefs = refs.stream().
-                peek(ref -> log.info("found link: {} : {}", ref.attr("href"), ref.text())).
+//                peek(ref -> log.info("found link: {} : {}", ref.attr("href"), ref.text())).
                 map(element -> normalizeLink(element.attr("href"), url)).
                 filter(Optional::isPresent).
                 map(Optional::get).toList();

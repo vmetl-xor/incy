@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS public.words;
 
 CREATE TABLE IF NOT EXISTS public.sites
 (
-    name character varying,
+    name character varying UNIQUE,
     id SERIAL PRIMARY KEY
 );
 

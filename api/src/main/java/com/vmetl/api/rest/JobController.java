@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/jobs")
@@ -28,7 +29,15 @@ public class JobController {
 
     @GetMapping(value = "/{id}")
     public Message findById(@PathVariable("id") Long id) {
-        dbService.addSite("www." + id + ".com");
+        dbService.addSite("www.example.com");
+
+        dbService.updateSiteStatistics(1, Map.of("one", 1,
+                "two", 2,
+                "three", 3,
+                "four", 4));
+
+        Integer siteIdByName = dbService.getSiteIdByName("www.example.com");
+
         return jobService.sendMessage("http://www.example.com");
 
         //        return new Foo("someId", "someName");
