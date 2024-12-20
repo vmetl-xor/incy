@@ -1,7 +1,8 @@
 package com.vmetl.crawler.messaging;
 
+import com.vmetl.incy.SiteDao;
 import com.vmetl.incy.cache.RefsCache;
-import com.vmetl.incy.DbService;
+import com.vmetl.incy.CacheAwareDbService;
 import com.vmetl.incy.messaging.Message;
 import com.vmetl.incy.messaging.MessageConsumer;
 import com.vmetl.incy.messaging.MessageUtil;
@@ -22,11 +23,11 @@ public class TaskMessageConsumer implements MessageConsumer {
     Logger log = LoggerFactory.getLogger(TaskMessageConsumer.class);
 
     private final MessagesService messagesService;
-    private final DbService dbService;
+    private final SiteDao dbService;
     private final RefsCache cache;
 
     @Autowired
-    public TaskMessageConsumer(MessagesService messagesService, DbService dbService, RefsCache cache) {
+    public TaskMessageConsumer(MessagesService messagesService, CacheAwareDbService dbService, RefsCache cache) {
         this.messagesService = messagesService;
         this.dbService = dbService;
         this.cache = cache;
@@ -38,7 +39,9 @@ public class TaskMessageConsumer implements MessageConsumer {
 
         boolean shouldProcessDeeper = MessageUtil.getCurrentRefDepth(message) < MessageUtil.getGlobalRefDepth(message);
 
-        String siteName = MessageUtil.getSite(message);
+        String siteName = MessageUtil.getDomain(message);
+        dbService.addSite(siteName);
+
         Optional<SiteInformation> siteInfo = HtmlParser.parse(siteName);
 
         siteInfo.ifPresent(siteInformation -> {
@@ -52,7 +55,7 @@ public class TaskMessageConsumer implements MessageConsumer {
                                     new Message.MessageBuilder().
                                             setId(UUID.randomUUID().toString()).
                                             addDepth(MessageUtil.getCurrentRefDepth(message) + 1).
-                                            addSite(urlRef).
+                                            addUrl(urlRef).
                                             build();
 
                             messagesService.
@@ -65,9 +68,18 @@ public class TaskMessageConsumer implements MessageConsumer {
 
             Map<String, Integer> wordStats = siteInformation.getWordsFrequency();
 
-            dbService.getSiteIdByName(siteName);
-            dbService.updateSiteStatistics(1, wordStats);
-
+            dbService.getSiteIdByName(siteName).
+                    ifPresentOrElse(siteId -> dbService.updateSiteStatistics(siteId, wordStats),
+                            () -> log.error("No site found: {}", siteName));
+            idle();
         });
+    }
+
+    private static void idle() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

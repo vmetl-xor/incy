@@ -1,6 +1,5 @@
-package com.vmetl.crawler.cache;
+package com.vmetl.incy.cache;
 
-import com.vmetl.incy.cache.RefsCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

@@ -27,6 +27,10 @@ public class SiteInformation {
         wordsFrequency.put(word, frequency);
     }
 
+    public void addAllWordFrequency(Map<String, Integer> wordsFrequency) {
+        this.wordsFrequency.putAll(wordsFrequency);
+    }
+
     public List<String> getReferences() {
         return references;
     }

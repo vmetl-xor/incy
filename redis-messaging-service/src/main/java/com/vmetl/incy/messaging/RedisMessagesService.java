@@ -28,7 +28,7 @@ public class RedisMessagesService implements MessagesService {
         RecordId recordId = redisTemplate.opsForStream().add(
                 StreamRecords.mapBacked(message.getPayload()).withStreamKey(STREAM_KEY)
         );
-        String site = MessageUtil.getSite(message);
+        String site = MessageUtil.getUrl(message);
         postAction.apply(site);
 
         log.info("Produced message with ID: {}, site: {}", recordId.getValue(), site);

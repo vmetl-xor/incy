@@ -1,13 +1,10 @@
 package com.vmetl.api.service;
 
 import com.vmetl.incy.messaging.Message;
-import com.vmetl.incy.messaging.MessageUtil;
 import com.vmetl.incy.messaging.MessagesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -26,7 +23,7 @@ public class JobService {
                 new Message.MessageBuilder().
                         setId(id).
                         addDepth(0).
-                        addSite(site).
+                        addUrl(site).
                         build();
 
         messagesService.sendMessage(newMessage, o -> null);

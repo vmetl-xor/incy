@@ -8,8 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.vmetl.parser.LinksNormalizationUtil.normalizeLink;
+import static com.vmetl.parser.StringSplitter.getWordsStream;
+import static com.vmetl.parser.StringSplitter.getWordsStreamSlowest;
 
 public class HtmlParser {
 
@@ -37,11 +40,17 @@ public class HtmlParser {
 
         List<String> internalRefs = refs.stream().
 //                peek(ref -> log.info("found link: {} : {}", ref.attr("href"), ref.text())).
-                map(element -> normalizeLink(element.attr("href"), url)).
+        map(element -> normalizeLink(element.attr("href"), url)).
                 filter(Optional::isPresent).
                 map(Optional::get).toList();
 
         siteInformation.addAllReferences(internalRefs);
+
+
+        Map<String, Integer> wordsCount =
+                getWordsStream(doc.text()).
+                        collect(Collectors.toMap(word -> word, word -> 1/*init value*/, Integer::sum, HashMap::new));
+        siteInformation.addAllWordFrequency(wordsCount);
 
 //        links.forEach(HtmlParser::parse);
 

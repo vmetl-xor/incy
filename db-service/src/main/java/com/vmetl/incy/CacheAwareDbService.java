@@ -1,5 +1,6 @@
 package com.vmetl.incy;
 
+import com.vmetl.incy.cache.SiteNameCache;
 import com.vmetl.incy.db.SiteRepository;
 import com.vmetl.incy.db.WordStats;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class DbService {
+public class CacheAwareDbService implements SiteDao {
 
     @Autowired
     private final JdbcTemplate jdbcTemplate;
@@ -29,32 +27,40 @@ public class DbService {
     @Autowired
     private final SiteRepository siteRepository;
 
-    public DbService(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, SiteRepository siteRepository) {
+    @Autowired
+    private final SiteNameCache sitesCache;
+
+    public CacheAwareDbService(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                               SiteRepository siteRepository, SiteNameCache sitesCache) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.siteRepository = siteRepository;
+        this.sitesCache = sitesCache;
     }
 
+    @Override
     public void addSite(String name) {
         siteRepository.addSite(name);
+        // todo add to cache
     }
 
-    public Integer getSiteIdByName(String siteName) {
-        return siteRepository.getSiteIdByName(siteName).
-                orElseThrow(() -> new IllegalStateException("No site found with name: " + siteName));
+    @Override
+    public Optional<Integer> getSiteIdByName(String siteName) {
+        return sitesCache.getIdByName(siteName).
+                or(() -> siteRepository.getSiteIdByName(siteName).
+                        map(siteId -> {
+                            sitesCache.addSiteName(siteName, siteId);
+                            return siteId;
+                        }));
     }
 
+    @Override
     @Transactional
     public void updateSiteStatistics(int siteId, Map<String, Integer> statistics) {
         Set<String> words = statistics.keySet();
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("words", words);
-
-        String fetchSql = "SELECT value, id FROM words WHERE value IN (:words)";
-
         final Map<String, Integer> wordToIdMap = new HashMap<>();
-        fetchWords(fetchSql, params, wordToIdMap);
+        fetchWords(words, wordToIdMap);
 
         List<String> missingWords =
                 words.stream().filter(s -> !wordToIdMap.containsKey(s)).collect(Collectors.toList());
@@ -76,9 +82,7 @@ public class DbService {
             );
 
             // Re-fetch the newly inserted words to get their IDs
-            Map<String, Object> refetchParams = new HashMap<>();
-            refetchParams.put("words", missingWords);
-            fetchWords(fetchSql, refetchParams, wordToIdMap);
+            fetchWords(missingWords, wordToIdMap);
         }
 
         String upsertSql =
@@ -109,10 +113,14 @@ public class DbService {
                     }
                 }
         );
-
     }
 
-    private void fetchWords(String fetchSql, Map<String, Object> params, Map<String, Integer> wordToIdMap) {
+    private void fetchWords(Collection<String> words, Map<String, Integer> wordToIdMap) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("words", words);
+
+        String fetchSql = "SELECT value, id FROM words WHERE value IN (:words)";
+
         namedParameterJdbcTemplate.query(fetchSql, params, rs -> {
             wordToIdMap.put(rs.getString("value"), rs.getInt("id"));
         });

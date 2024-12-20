@@ -2,7 +2,8 @@ package com.vmetl.api.rest;
 
 
 import com.vmetl.api.service.JobService;
-import com.vmetl.incy.DbService;
+import com.vmetl.incy.CacheAwareDbService;
+import com.vmetl.incy.SiteDao;
 import com.vmetl.incy.messaging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,10 +19,10 @@ import java.util.Map;
 public class JobController {
 
     private final JobService jobService;
-    private final DbService dbService;
+    private final SiteDao dbService;
 
     @Autowired
-    public JobController(JobService jobService, DbService dbService) {
+    public JobController(JobService jobService, CacheAwareDbService dbService) {
         this.jobService = jobService;
         this.dbService = dbService;
     }
@@ -29,16 +30,16 @@ public class JobController {
 
     @GetMapping(value = "/{id}")
     public Message findById(@PathVariable("id") Long id) {
-        dbService.addSite("www.example.com");
+//        dbService.addSite("http://www.example.com");
 
-        dbService.updateSiteStatistics(1, Map.of("one", 1,
-                "two", 2,
-                "three", 3,
-                "four", 4));
+//        dbService.updateSiteStatistics(1, Map.of("one", 1,
+//                "two", 2,
+//                "three", 3,
+//                "four", 4));
 
-        Integer siteIdByName = dbService.getSiteIdByName("www.example.com");
+//        Integer siteIdByName = dbService.getSiteIdByName("www.example.com").get();
 
-        return jobService.sendMessage("http://www.example.com");
+        return jobService.sendMessage("https://en.wikipedia.org/wiki/Charles_Dickens");
 
         //        return new Foo("someId", "someName");
 //        return RestPreconditions.checkFound(service.findById(id));

@@ -1,5 +1,9 @@
 package com.vmetl.incy.cache;
 
+import java.util.Optional;
+
 public interface SiteNameCache {
-    String getIdByName(String siteName);
+    Optional<Integer> getIdByName(String siteName);
+
+    boolean addSiteName(String siteName, Integer siteId);
 }

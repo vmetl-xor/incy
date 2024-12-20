@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Message {
-    public static final String SITE = "SITE";
+    public static final String URL = "URL";
     public static final String DEPTH = "DEPTH";
     public static final String GLOBAL_DEPTH = "GLOBAL_DEPTH";
     private final String id;
@@ -13,7 +13,7 @@ public class Message {
     private Message(MessageBuilder builder) {
         this.id = builder.id;
         this.payload = builder.payload;
-        payload.put(GLOBAL_DEPTH, 3);
+        payload.put(GLOBAL_DEPTH, 3); //todo externalize
     }
 
     public Map<String, Object> getPayload() {
@@ -35,8 +35,8 @@ public class Message {
             return this;
         }
 
-        public MessageBuilder addSite(Object value) {
-            payload.put(SITE, value);
+        public MessageBuilder addUrl(Object value) {
+            payload.put(URL, value);
             return this;
         }
 

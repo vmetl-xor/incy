@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface SiteRepository extends CrudRepository<Site, Long> {
 
     @Modifying
-    @Query("insert into sites(name) values (:name)")
+    @Query("insert into sites(name) values (:name) on conflict (name) do nothing")
     boolean addSite(@Param("name") String name);
 
     @Query("select id from sites where name = :name")
