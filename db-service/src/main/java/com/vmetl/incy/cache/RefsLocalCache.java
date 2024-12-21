@@ -17,14 +17,14 @@ public class RefsLocalCache implements RefsCache {
     @Override
     public boolean exists(String key) {
         boolean contains = cache.contains(key);
-        LOG.info("cache {}: {}", contains ? "hit" : "miss", key);
+        LOG.debug("cache {}: {}", contains ? "hit" : "miss", key);
 
         return contains;
     }
 
     @Override
     public boolean add(String ref) {
-        LOG.info("cache add: {}, cache size: {}", ref, cache.size());
+        LOG.debug("cache add: {}, cache size: {}", ref, cache.size());
 
         return cache.add(ref);
     }

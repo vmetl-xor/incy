@@ -12,16 +12,12 @@ import java.util.stream.Collectors;
 
 import static com.vmetl.parser.LinksNormalizationUtil.normalizeLink;
 import static com.vmetl.parser.StringSplitter.getWordsStream;
-import static com.vmetl.parser.StringSplitter.getWordsStreamSlowest;
 
 public class HtmlParser {
 
     private static final Logger log = LoggerFactory.getLogger(HtmlParser.class);
 
-    private static int counter = 0;
-
     public static Optional<SiteInformation> parse(String url) {
-        if (counter++ > 50) return Optional.empty();
         Document doc;
         try {
             doc = Jsoup.connect(url).get();
@@ -30,18 +26,19 @@ public class HtmlParser {
             log.error("Error message {}", e.getMessage());
 
             return Optional.empty();
-//            throw new RuntimeException(e);
         }
 
         SiteInformation siteInformation = new SiteInformation();
 //        Elements refs = doc.select("a[href]");
         Elements refs = doc.getElementsByTag("a");
-//        List<String> links = new ArrayList<>();
 
         List<String> internalRefs = refs.stream().
 //                peek(ref -> log.info("found link: {} : {}", ref.attr("href"), ref.text())).
         map(element -> normalizeLink(element.attr("href"), url)).
                 filter(Optional::isPresent).
+                peek(s -> {if (s.get().contains("javascript")) {
+                    log.error("Found the bug at url: {}, ref: {}", url, s.get());
+                }}).
                 map(Optional::get).toList();
 
         siteInformation.addAllReferences(internalRefs);
@@ -49,7 +46,7 @@ public class HtmlParser {
 
         Map<String, Integer> wordsCount =
                 getWordsStream(doc.text()).
-                        collect(Collectors.toMap(word -> word, word -> 1/*init value*/, Integer::sum, HashMap::new));
+                        collect(Collectors.toMap(word -> word, word -> 1, Integer::sum, HashMap::new));
         siteInformation.addAllWordFrequency(wordsCount);
 
 //        links.forEach(HtmlParser::parse);

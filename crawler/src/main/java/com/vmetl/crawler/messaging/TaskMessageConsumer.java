@@ -12,6 +12,7 @@ import com.vmetl.incy.SiteInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -26,6 +27,9 @@ public class TaskMessageConsumer implements MessageConsumer {
     private final SiteDao dbService;
     private final RefsCache cache;
 
+    @Value("${incy.crawler.default.depth}")
+    private int defaultDepth;
+
     @Autowired
     public TaskMessageConsumer(MessagesService messagesService, CacheAwareDbService dbService, RefsCache cache) {
         this.messagesService = messagesService;
@@ -37,8 +41,6 @@ public class TaskMessageConsumer implements MessageConsumer {
     public void consume(Message message) {
         log.debug("Received message: {}", message);
 
-        boolean shouldProcessDeeper = MessageUtil.getCurrentRefDepth(message) < MessageUtil.getGlobalRefDepth(message);
-
         String siteName = MessageUtil.getDomain(message);
         dbService.addSite(siteName);
 
@@ -46,21 +48,23 @@ public class TaskMessageConsumer implements MessageConsumer {
 
         siteInfo.ifPresent(siteInformation -> {
 
+            boolean shouldProcessDeeper = MessageUtil.getCurrentRefDepth(message) < defaultDepth;
+
             if (shouldProcessDeeper) {
                 siteInformation.getReferences().stream().
                         filter(ref -> !cache.exists(ref)).
-                        forEach(urlRef -> {
+                        forEach(ref -> {
 
                             Message newMessage =
                                     new Message.MessageBuilder().
                                             setId(UUID.randomUUID().toString()).
                                             addDepth(MessageUtil.getCurrentRefDepth(message) + 1).
-                                            addUrl(urlRef).
+                                            addUrl(ref).
                                             build();
 
                             messagesService.
                                     sendMessage(
-                                            newMessage, o -> cache.add(urlRef));
+                                            newMessage, o -> cache.add(ref));
                         });
             } else {
                 log.info("REACHED MAX DEPTH OF {}, terminating", MessageUtil.getCurrentRefDepth(message));

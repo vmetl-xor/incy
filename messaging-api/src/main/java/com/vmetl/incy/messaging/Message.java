@@ -6,14 +6,12 @@ import java.util.Map;
 public class Message {
     public static final String URL = "URL";
     public static final String DEPTH = "DEPTH";
-    public static final String GLOBAL_DEPTH = "GLOBAL_DEPTH";
     private final String id;
     private final Map<String, Object> payload;
 
     private Message(MessageBuilder builder) {
         this.id = builder.id;
         this.payload = builder.payload;
-        payload.put(GLOBAL_DEPTH, 3); //todo externalize
     }
 
     public Map<String, Object> getPayload() {
@@ -22,7 +20,10 @@ public class Message {
 
     @Override
     public String toString() {
-        return id + ": " + payload;
+        return "Message{" +
+                "id='" + id + '\'' +
+                ", payload=" + payload +
+                '}';
     }
 
 

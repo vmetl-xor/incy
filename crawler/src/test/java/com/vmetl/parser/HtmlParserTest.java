@@ -6,6 +6,6 @@ class HtmlParserTest {
 
     @Test
     void parse() {
-        HtmlParser.parse("http://example.com");
+        HtmlParser.parse("https://donate.wikimedia.org");
     }
 }

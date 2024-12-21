@@ -13,7 +13,7 @@ public class LinksNormalizationUtil {
 
     private static final Set<String> excludedBeginnings = Set.of("#", ".", "//");
     private static final Set<String> excludedPatterns = Set.of("/", "#", ".");
-    private static final Pattern protocolPattern = Pattern.compile(".*:");
+    private static final Pattern protocolPattern = Pattern.compile("^.*:");
     private static final Pattern domainPatter = Pattern.compile(URL_REGEX_PATTERN);
 
     public static Optional<String> normalizeLink(String linkHref, String originalUrl) {
