@@ -11,7 +11,7 @@ public class LinksNormalizationUtil {
     //todo refine regexs, protocol like 'mailto:', 'ftp:' handling
     private static final String URL_REGEX_PATTERN = "(?i)^(?:https?:\\/\\/)?(?:www\\.)?(?:[a-z0-9-]+\\.){1,9}[a-z]{2,5}(?:\\/.*)?$";
 
-    private static final Set<String> excludedBeginnings = Set.of("#", ".", "//");
+    private static final Set<String> excludedBeginnings = Set.of("#", ".", "//", "?");
     private static final Set<String> excludedPatterns = Set.of("/", "#", ".");
     private static final Pattern protocolPattern = Pattern.compile("^.*:");
     private static final Pattern domainPatter = Pattern.compile(URL_REGEX_PATTERN);
@@ -25,7 +25,7 @@ public class LinksNormalizationUtil {
             return Optional.of(linkHref);
         }
 
-        if (protocolPattern.matcher(linkHref).matches() || linkHref.isBlank()) {
+        if (protocolPattern.matcher(linkHref).find() || linkHref.isBlank()) {
             return Optional.empty();
         }
 
