@@ -27,7 +27,7 @@ public class CacheAwareDbService implements SiteDao {
 
     @Autowired
     public CacheAwareDbService(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate,
-                               SiteRepository siteRepository, SiteNameCache sitesCache, SitesReactiveRepository sitesReactiveRepository) {
+                               SiteRepository siteRepository, SiteNameCache sitesCache , SitesReactiveRepository sitesReactiveRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.siteRepository = siteRepository;
