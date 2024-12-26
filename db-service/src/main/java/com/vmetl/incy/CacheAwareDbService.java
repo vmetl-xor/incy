@@ -2,13 +2,14 @@ package com.vmetl.incy;
 
 import com.vmetl.incy.cache.SiteNameCache;
 import com.vmetl.incy.db.SiteRepository;
-import com.vmetl.incy.db.WordStats;
+import com.vmetl.incy.db.reactive.SitesReactiveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -18,24 +19,20 @@ import java.util.stream.Collectors;
 @Component
 public class CacheAwareDbService implements SiteDao {
 
-    @Autowired
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    @Autowired
     private final SiteRepository siteRepository;
+    private final SiteNameCache sitesCache;
+    private final SitesReactiveRepository sitesReactiveRepository;
 
     @Autowired
-    private final SiteNameCache sitesCache;
-
     public CacheAwareDbService(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate,
-                               SiteRepository siteRepository, SiteNameCache sitesCache) {
+                               SiteRepository siteRepository, SiteNameCache sitesCache, SitesReactiveRepository sitesReactiveRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.siteRepository = siteRepository;
         this.sitesCache = sitesCache;
+        this.sitesReactiveRepository = sitesReactiveRepository;
     }
 
     @Override
@@ -113,6 +110,11 @@ public class CacheAwareDbService implements SiteDao {
                     }
                 }
         );
+    }
+
+    @Override
+    public Flux<SiteStats> getSiteStatsStream() {
+        return sitesReactiveRepository.getSiteStats();
     }
 
     private void fetchWords(Collection<String> words, Map<String, Integer> wordToIdMap) {

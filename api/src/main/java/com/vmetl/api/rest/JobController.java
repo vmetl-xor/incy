@@ -4,15 +4,15 @@ package com.vmetl.api.rest;
 import com.vmetl.api.service.JobService;
 import com.vmetl.incy.CacheAwareDbService;
 import com.vmetl.incy.SiteDao;
+import com.vmetl.incy.SiteStats;
 import com.vmetl.incy.messaging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/jobs")
@@ -30,19 +30,12 @@ public class JobController {
 
     @GetMapping(value = "/{id}")
     public Message findById(@PathVariable("id") Long id) {
-//        dbService.addSite("http://www.example.com");
-
-//        dbService.updateSiteStatistics(1, Map.of("one", 1,
-//                "two", 2,
-//                "three", 3,
-//                "four", 4));
-
-//        Integer siteIdByName = dbService.getSiteIdByName("www.example.com").get();
-
         return jobService.sendMessage("https://en.wikipedia.org/wiki/Charles_Dickens");
+    }
 
-        //        return new Foo("someId", "someName");
-//        return RestPreconditions.checkFound(service.findById(id));
+    @GetMapping(value = "/sites/all", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<SiteStats> getAllSitesStats() {
+        return dbService.getSiteStatsStream();
     }
 
     @GetMapping(value = "/stop")
@@ -50,40 +43,5 @@ public class JobController {
         jobService.stopAllProcessors();
 
         return "All stopped";
-        //        return new Foo("someId", "someName");
-//        return RestPreconditions.checkFound(service.findById(id));
     }
-
-    @GetMapping
-    public List<Foo> findById() {
-        return List.of(new Foo("someId", "someName"), new Foo("someId2", "someName2"));
-//        return RestPreconditions.checkFound(service.findById(id));
-    }
-
-    public static class Foo {
-        private String id;
-        private String name;
-
-        public Foo(String id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
 }
