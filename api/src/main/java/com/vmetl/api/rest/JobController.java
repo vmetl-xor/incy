@@ -20,7 +20,7 @@ public class JobController {
     private final SiteDao dbService;
 
     @Autowired
-    public JobController(JobService jobService, CacheAwareDbService dbService) {
+    public JobController(JobService jobService, SiteDao dbService) {
         this.jobService = jobService;
         this.dbService = dbService;
     }

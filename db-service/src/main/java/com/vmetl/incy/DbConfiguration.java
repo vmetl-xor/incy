@@ -4,7 +4,6 @@ import io.r2dbc.proxy.ProxyConnectionFactory;
 import io.r2dbc.proxy.support.QueryExecutionInfoFormatter;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
-import io.r2dbc.spi.ConnectionFactoryOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -23,7 +22,7 @@ public class DbConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(DbConfiguration.class);
 
-    QueryExecutionInfoFormatter formatter = QueryExecutionInfoFormatter.showAll();
+    private final QueryExecutionInfoFormatter formatter = QueryExecutionInfoFormatter.showAll();
 
 
     @Bean
@@ -37,6 +36,8 @@ public class DbConfiguration {
                         .option(PORT, 5432)
                         .option(DATABASE, "incy")
                         .build());
+
+//        logger.warn("Using PostgreSQL connection factory: {}", original);
 
         return ProxyConnectionFactory.builder(original)
                 .onAfterQuery(queryInfo -> {  // listener
