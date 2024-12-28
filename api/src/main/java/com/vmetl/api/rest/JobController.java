@@ -7,11 +7,9 @@ import com.vmetl.incy.SiteDao;
 import com.vmetl.incy.SiteStats;
 import com.vmetl.incy.messaging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -31,6 +29,11 @@ public class JobController {
     @GetMapping(value = "/{id}")
     public Message findById(@PathVariable("id") Long id) {
         return jobService.sendMessage("https://en.wikipedia.org/wiki/Charles_Dickens");
+    }
+
+    @PostMapping(value = "/add")
+    public Message createJob(@RequestBody String url) {
+        return jobService.sendMessage(url);
     }
 
     @GetMapping(value = "/sites/all", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

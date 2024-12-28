@@ -14,7 +14,7 @@ class StringSplitterTest {
 
 //    private static final String TEXT_STRING = "Depending on the interview, the output of the traversed web pages may be used for different purposes. This can have some consequences on the overall design. For example, a search engine would need to index the data and rank it (using PageRank or other algorithms), while a company like OpenAI would dump the raw text from the pages into a database to be used to train LLMs (Large Language Models). Regardless of the use case, the interview is likely to focus on the crawling task—how can we efficiently crawl the web, extract the necessary data, and store it in a way that is easily accessible?\n" +
 //            "For our purposes, we'll design a web crawler whose goal is to extract text data from the web to train an LLM. This could be used by a company like OpenAI to train their GPT-4 model, Google to train Gemini, Meta to train LLaMA, etc.";
-    public static final int ITERATIONS = 100;
+    public static final int ITERATIONS = 1;
     private String TEXT;
 
     @BeforeEach

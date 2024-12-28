@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
 
 import java.sql.PreparedStatement;
@@ -52,7 +53,7 @@ public class CacheAwareDbService implements SiteDao {
     }
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     public void updateSiteStatistics(int siteId, Map<String, Integer> statistics) {
         Set<String> words = statistics.keySet();
 
@@ -84,11 +85,13 @@ public class CacheAwareDbService implements SiteDao {
 
         String upsertSql =
                 "INSERT INTO site_statistics (site_id, word_id, word_occurrences) VALUES (?, ?, ?) " +
-                        "ON CONFLICT (site_id, word_id) DO UPDATE SET word_occurrences = site_statistics.word_occurrences + EXCLUDED.word_occurrences";
+                        "ON CONFLICT (site_id, word_id) DO " +
+                        "UPDATE SET word_occurrences = site_statistics.word_occurrences + EXCLUDED.word_occurrences";
 
         List<WordStats> wordStats = statistics.entrySet().stream().
                 map(entry -> new WordStats(entry.getKey(), entry.getValue())).
                 toList();
+        //todo split batch to smaller chunks
 
         jdbcTemplate.batchUpdate(upsertSql,
                 new BatchPreparedStatementSetter() {
@@ -111,6 +114,8 @@ public class CacheAwareDbService implements SiteDao {
                 }
         );
     }
+
+
 
     @Override
     public Flux<SiteStats> getSiteStatsStream() {

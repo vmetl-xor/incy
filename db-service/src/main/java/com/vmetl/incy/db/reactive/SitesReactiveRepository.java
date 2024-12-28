@@ -25,8 +25,6 @@ public class SitesReactiveRepository {
             "group by w.value " +
             "order by sum(word_occurrences) desc";
 
-//    public static final String SITE_STATS_QUERY = "select 'w.value' as word_value, 1 as word_count ";
-
     private final DatabaseClient client;
 
 
