@@ -28,12 +28,12 @@ public class JobController {
 
     @GetMapping(value = "/{id}")
     public Message findById(@PathVariable("id") Long id) {
-        return jobService.sendMessage("https://en.wikipedia.org/wiki/Charles_Dickens");
+        return jobService.sendMessage(Job.of("https://en.wikipedia.org/wiki/Charles_Dickens", 0));
     }
 
     @PostMapping(value = "/add")
-    public Message createJob(@RequestBody String url) {
-        return jobService.sendMessage(url);
+    public Message createJob(@RequestBody Job job) {
+        return jobService.sendMessage(job);
     }
 
     @GetMapping(value = "/sites/all", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

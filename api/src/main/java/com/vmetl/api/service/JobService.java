@@ -1,5 +1,6 @@
 package com.vmetl.api.service;
 
+import com.vmetl.api.rest.Job;
 import com.vmetl.incy.messaging.Message;
 import com.vmetl.incy.messaging.MessagesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +17,14 @@ public class JobService {
         this.messagesService = messagesService;
     }
 
-    public Message sendMessage(String site) {
+    public Message sendMessage(Job job) {
         String id = UUID.randomUUID().toString();
 
         Message newMessage =
                 new Message.MessageBuilder().
                         setId(id).
-                        addDepth(0).
-                        addUrl(site).
+                        addDepth(job.getDepth()).
+                        addUrl(job.getUrl()).
                         build();
 
         messagesService.sendMessage(newMessage, o -> null);
