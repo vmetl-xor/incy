@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,7 +30,11 @@ class JobControllerTest {
 
     @Test
     void createJob() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post("/jobs/add").content("www.example.com")).andExpect(status().isOk());
+        String content = "{\n" +
+                "  \"url\": \"www.example.com\",\n" +
+                "  \"depth\": 0\n" +
+                "}";
+        mvc.perform(MockMvcRequestBuilders.post("/jobs/add").contentType(MediaType.APPLICATION_JSON).content(content)).andExpect(status().isOk());
 
     }
 }
