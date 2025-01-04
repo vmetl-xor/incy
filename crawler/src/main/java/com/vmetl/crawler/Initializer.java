@@ -12,7 +12,6 @@ import java.util.Map;
 @Component
 public class Initializer implements InitializingBean {
 
-
     private static final Logger LOG = LoggerFactory.getLogger(Initializer.class);
 
     @Autowired
