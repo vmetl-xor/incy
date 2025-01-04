@@ -25,7 +25,7 @@ public class RedisVisitedRefsCache implements RefsCache {
 
     @Override
     public boolean add(String ref) {
-        Long added = redisTemplate.opsForSet().add(REFS_VISITED);
+        Long added = redisTemplate.opsForSet().add(REFS_VISITED, ref);
         return (added != null && added > 0);
     }
 }
