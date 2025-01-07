@@ -41,7 +41,7 @@ public class DbConfiguration {
 
         return ProxyConnectionFactory.builder(original)
                 .onAfterQuery(queryInfo -> {  // listener
-                    logger.info(formatter.format(queryInfo));
+//                    logger.info(formatter.format(queryInfo));
                 })
                 .build();
     }

@@ -61,10 +61,9 @@ public class TaskMessageConsumer implements MessageConsumer {
                                             addDepth(MessageUtil.getCurrentRefDepth(message) + 1).
                                             addUrl(ref).
                                             build();
-
                             messagesService.
                                     sendMessage(
-                                            newMessage, o -> cache.add(ref));
+                                            newMessage, o -> 0);
                         });
             } else {
                 log.info("REACHED MAX DEPTH OF {}, terminating", MessageUtil.getCurrentRefDepth(message));
@@ -75,7 +74,7 @@ public class TaskMessageConsumer implements MessageConsumer {
             dbService.getSiteIdByName(siteName).
                     ifPresentOrElse(siteId -> dbService.updateSiteStatistics(siteId, wordStats),
                             () -> log.error("No site found: {}", siteName));
-            idle();
+//            idle();
         });
     }
 

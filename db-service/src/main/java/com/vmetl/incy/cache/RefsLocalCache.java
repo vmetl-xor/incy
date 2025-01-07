@@ -2,12 +2,14 @@ package com.vmetl.incy.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+//@Primary
 public class RefsLocalCache implements RefsCache {
 
     private static final Logger LOG = LoggerFactory.getLogger(RefsLocalCache.class);

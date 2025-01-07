@@ -41,6 +41,8 @@ public class RedisMessagesService implements MessagesService {
             log.debug("Url {} has already been processed", url);
             return;
         }
+        else cache.add(url);
+
         RecordId recordId = redisTemplate.opsForStream().add(
                 StreamRecords.mapBacked(message.getPayload()).withStreamKey(STREAM_KEY)
         );

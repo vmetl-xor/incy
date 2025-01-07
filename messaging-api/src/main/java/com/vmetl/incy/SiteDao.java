@@ -13,4 +13,8 @@ public interface SiteDao {
     void updateSiteStatistics(int siteId, Map<String, Integer> statistics);
 
     Flux<SiteStats> getSiteStatsStream();
+
+    Flux<SiteStats> getSiteStatsByNameStream(String name);
+
+    SiteStats getSiteStats(String siteName);
 }

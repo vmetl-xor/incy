@@ -57,12 +57,28 @@ public class SitesReactiveRepository {
                 }, 5);
     }
 
-    public Flux<SiteStats> getSiteStats() {
+    public Flux<SiteStats> getSiteStatsByName(String name) {
 
-        Flux<SiteStats> allSites = client.sql("SELECT name as site_name, id as site_id FROM SITES").
+        Flux<SiteStats> sites = client.sql("SELECT name as site_name, id as site_id FROM SITES where name like '%:site_pattern%'").
+                bind("site_pattern", name).
                 map(row -> new SiteStats(row.get("site_name", String.class), row.get("site_id", Long.class), new ArrayList<>())).
                 all();
 
+        return fetchSitesStats(sites);
+
+    }
+
+    public Flux<SiteStats> getSiteStats() {
+
+        Flux<SiteStats> sites = client.sql("SELECT name as site_name, id as site_id FROM SITES").
+                map(row -> new SiteStats(row.get("site_name", String.class), row.get("site_id", Long.class), new ArrayList<>())).
+                all();
+
+        return fetchSitesStats(sites);
+
+    }
+
+    private Flux<SiteStats> fetchSitesStats(Flux<SiteStats> allSites) {
         return allSites.
                 flatMap(site ->
                         client.sql(SITE_STATS_QUERY).
@@ -72,7 +88,6 @@ public class SitesReactiveRepository {
                                 all().
                                 doOnNext(wordStats -> site.wordStats().add(wordStats)).
                                 then(Mono.just(site)), 5);
-
     }
 
 }

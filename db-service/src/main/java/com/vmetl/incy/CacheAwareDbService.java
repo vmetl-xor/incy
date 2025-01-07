@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
 
 import java.sql.PreparedStatement;
@@ -28,7 +27,7 @@ public class CacheAwareDbService implements SiteDao {
 
     @Autowired
     public CacheAwareDbService(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate,
-                               SiteRepository siteRepository, SiteNameCache sitesCache , SitesReactiveRepository sitesReactiveRepository) {
+                               SiteRepository siteRepository, SiteNameCache sitesCache, SitesReactiveRepository sitesReactiveRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.siteRepository = siteRepository;
@@ -116,10 +115,30 @@ public class CacheAwareDbService implements SiteDao {
     }
 
 
-
     @Override
     public Flux<SiteStats> getSiteStatsStream() {
         return sitesReactiveRepository.getSiteStats();
+    }
+
+    @Override
+    public Flux<SiteStats> getSiteStatsByNameStream(String name) {
+        return sitesReactiveRepository.getSiteStatsByName(name);
+    }
+
+    @Override
+    public SiteStats getSiteStats(String siteName) { //todo
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("site_name", siteName);
+
+        List<WordStats> words = new ArrayList<>();
+        String fetchSql = "SELECT value, id FROM words WHERE value IN (:words)";
+
+        SiteStats result = namedParameterJdbcTemplate.queryForObject(fetchSql, params, (rs, rownum) -> {
+            return new SiteStats(siteName, rs.getString("site_id"), List.of());
+        });
+
+        return result;
     }
 
     private void fetchWords(Collection<String> words, Map<String, Integer> wordToIdMap) {

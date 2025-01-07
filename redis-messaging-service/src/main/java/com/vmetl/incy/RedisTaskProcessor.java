@@ -42,18 +42,16 @@ public class RedisTaskProcessor implements TaskProcessor {
     @Override
     public void run() {
 
+        Consumer consumer = Consumer.from(GROUP_NAME, consumerName);
+        StreamReadOptions options = StreamReadOptions.empty().count(1).block(Duration.ofSeconds(2));
         log.info("Starting task processor {}", consumerName);
         while (runningState.isRunning()) {
             try {
-                Consumer consumer = Consumer.from(GROUP_NAME, consumerName);
-                StreamReadOptions options = StreamReadOptions.empty().count(1).block(Duration.ofSeconds(2));
                 StreamOffset<String> offset = StreamOffset.create(STREAM_KEY, ReadOffset.lastConsumed());
-
                 List<MapRecord<String, Object, Object>> messages = redisTemplate.opsForStream()
                         .read(consumer,
                                 options,
                                 offset);
-
 
                 if (messages != null && !messages.isEmpty()) {
                     for (MapRecord<String, Object, Object> message : messages) {
