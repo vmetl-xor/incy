@@ -1,4 +1,4 @@
-package com.vmetl.api.rest;
+package com.vmetl.api.rest.dto;
 
 public class Job {
     private String url;

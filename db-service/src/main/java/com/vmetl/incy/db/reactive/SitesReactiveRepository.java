@@ -36,7 +36,8 @@ public class SitesReactiveRepository {
     public Flux<SiteStats> getSiteStatsv1() {
 
         Flux<SiteStats> allSites = client.sql("SELECT name as site_name, id as site_id FROM SITES").
-                map(row -> new SiteStats(row.get("site_name", String.class), row.get("site_id", Long.class), new ArrayList<>())).
+                map(row -> new SiteStats(row.get("site_name", String.class),
+                        row.get("site_id", Long.class), new ArrayList<>())).
                 all();
 
         return allSites.
@@ -45,12 +46,14 @@ public class SitesReactiveRepository {
                     return client.sql(SITE_STATS_QUERY).bindValues(params).
                             map((row, rowMetadata) -> {
                                 site.wordStats().
-                                        add(new WordStats(row.get("word_value", String.class), row.get("word_count", Integer.class)));
+                                        add(new WordStats(row.get("word_value", String.class),
+                                                row.get("word_count", Integer.class)));
                                 return site;
                             }).
                             all().
                             collectList().map(wordStatsList -> {
-                                List<WordStats> wStats = wordStatsList.isEmpty() ? Collections.emptyList() : wordStatsList.getFirst().wordStats();
+                                List<WordStats> wStats = wordStatsList.isEmpty() ?
+                                        Collections.emptyList() : wordStatsList.getFirst().wordStats();
                                 site.wordStats().addAll(wStats);
                                 return site;              // Return *one* site object per site
                             });
@@ -59,9 +62,11 @@ public class SitesReactiveRepository {
 
     public Flux<SiteStats> getSiteStatsByName(String name) {
 
-        Flux<SiteStats> sites = client.sql("SELECT name as site_name, id as site_id FROM SITES where name like '%:site_pattern%'").
-                bind("site_pattern", name).
-                map(row -> new SiteStats(row.get("site_name", String.class), row.get("site_id", Long.class), new ArrayList<>())).
+        Flux<SiteStats> sites = client.sql(
+                "SELECT name as site_name, id as site_id FROM SITES where name like :site_pattern").
+                bind("site_pattern", "%" + name + "%").
+                map(row -> new SiteStats(row.get("site_name", String.class),
+                        row.get("site_id", Long.class), new ArrayList<>())).
                 all();
 
         return fetchSitesStats(sites);
@@ -71,7 +76,8 @@ public class SitesReactiveRepository {
     public Flux<SiteStats> getSiteStats() {
 
         Flux<SiteStats> sites = client.sql("SELECT name as site_name, id as site_id FROM SITES").
-                map(row -> new SiteStats(row.get("site_name", String.class), row.get("site_id", Long.class), new ArrayList<>())).
+                map(row -> new SiteStats(row.get("site_name", String.class),
+                        row.get("site_id", Long.class), new ArrayList<>())).
                 all();
 
         return fetchSitesStats(sites);
@@ -84,7 +90,8 @@ public class SitesReactiveRepository {
                         client.sql(SITE_STATS_QUERY).
                                 bindValues(Map.of("site_id", site.id())).
                                 map((row, rowMetadata) ->
-                                        new WordStats(row.get("word_value", String.class), row.get("word_count", Integer.class))).
+                                        new WordStats(row.get("word_value", String.class),
+                                                row.get("word_count", Integer.class))).
                                 all().
                                 doOnNext(wordStats -> site.wordStats().add(wordStats)).
                                 then(Mono.just(site)), 5);

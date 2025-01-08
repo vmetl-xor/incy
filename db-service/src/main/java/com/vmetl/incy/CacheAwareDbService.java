@@ -83,9 +83,11 @@ public class CacheAwareDbService implements SiteDao {
         }
 
         String upsertSql =
-                "INSERT INTO site_statistics (site_id, word_id, word_occurrences) VALUES (?, ?, ?) " +
-                        "ON CONFLICT (site_id, word_id) DO " +
-                        "UPDATE SET word_occurrences = site_statistics.word_occurrences + EXCLUDED.word_occurrences";
+                """
+                        INSERT INTO site_statistics (site_id, word_id, word_occurrences) VALUES (?, ?, ?) 
+                        ON CONFLICT (site_id, word_id) DO
+                        UPDATE SET word_occurrences = site_statistics.word_occurrences + EXCLUDED.word_occurrences
+                        """;
 
         List<WordStats> wordStats = statistics.entrySet().stream().
                 map(entry -> new WordStats(entry.getKey(), entry.getValue())).
@@ -132,11 +134,17 @@ public class CacheAwareDbService implements SiteDao {
         params.put("site_name", siteName);
 
         List<WordStats> words = new ArrayList<>();
-        String fetchSql = "SELECT value, id FROM words WHERE value IN (:words)";
+        String fetchSql = """
+                select s.name as site, w.value as word, ss.word_occurrences as count from sites s
+                    inner join site_statistics ss on s.id = ss.site_id
+                    inner join words w on ss.word_id = w.id
+                where s.name = :site_name
+                order by ss.word_occurrences desc
+                """;
 
-        SiteStats result = namedParameterJdbcTemplate.queryForObject(fetchSql, params, (rs, rownum) -> {
-            return new SiteStats(siteName, rs.getString("site_id"), List.of());
-        });
+        SiteStats result = new SiteStats(siteName, -1L, words);
+        namedParameterJdbcTemplate.query(fetchSql, params,
+                (rs, rowNum) -> words.add(new WordStats(rs.getString("word"), rs.getInt("count"))));
 
         return result;
     }

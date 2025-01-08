@@ -1,6 +1,6 @@
 package com.vmetl.api.service;
 
-import com.vmetl.api.rest.Job;
+import com.vmetl.api.rest.dto.Job;
 import com.vmetl.incy.messaging.Message;
 import com.vmetl.incy.messaging.MessagesService;
 import org.springframework.beans.factory.annotation.Autowired;
