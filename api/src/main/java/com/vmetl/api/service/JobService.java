@@ -17,7 +17,7 @@ public class JobService {
         this.messagesService = messagesService;
     }
 
-    public Message sendMessage(Job job) {
+    public Message createJob(Job job) {
         String id = UUID.randomUUID().toString();
 
         Message newMessage =

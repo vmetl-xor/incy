@@ -3,7 +3,6 @@ package com.vmetl.api.rest;
 
 import com.vmetl.api.rest.dto.Job;
 import com.vmetl.api.service.JobService;
-import com.vmetl.api.service.SitesService;
 import com.vmetl.incy.messaging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +20,14 @@ public class JobController {
 
     @PostMapping(value = "/add")
     public Message createJob(@RequestBody Job job) {
-        return jobService.sendMessage(job);
+        return jobService.createJob(job);
     }
 
 
-    @GetMapping(value = "/stop")
+    @PostMapping(value = "/stop")
     public String stopAll() {
         jobService.stopAllProcessors();
 
-        return "All stopped";
+        return "All jobs stopped";
     }
 }
