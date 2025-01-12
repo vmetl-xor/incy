@@ -3,9 +3,6 @@ package com.vmetl.api.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmetl.api.rest.dto.Job;
 import com.vmetl.api.service.JobService;
-import com.vmetl.incy.SiteDao;
-import com.vmetl.incy.messaging.Message;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -17,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +33,7 @@ class JobControllerTest {
     @MockBean
     private JobService jobService;
 
+
     @Test
     void createJob_withCorrectMessage_shouldCreateNewJob() throws Exception {
         String content = """
@@ -44,27 +44,47 @@ class JobControllerTest {
                 """;
 
         when(jobService.createJob(any(Job.class))).
-                thenReturn(new Message.MessageBuilder().
-                        addDepth(0).
-                        addUrl("www.example.com").
-                        build());
+                thenReturn((Optional.of(new Job("www.example.com", 0))));
 
         String responseString = mvc.perform(MockMvcRequestBuilders.post("/jobs/add").
                         contentType(MediaType.APPLICATION_JSON).
                         content(content)).
                 andExpect(status().isOk()).
-                andExpect(jsonPath("$.payload.URL").value("www.example.com")).
-                andExpect(jsonPath("$.payload.DEPTH").value(0)).
+                andExpect(jsonPath("$.url").value("www.example.com")).
+                andExpect(jsonPath("$.depth").value(0)).
                 andReturn().
                 getResponse().
                 getContentAsString();
 
-        Message message = new ObjectMapper().readValue(responseString, Message.class);
-        assertThat(message.getPayload()).containsEntry("URL", "www.example.com");
-        assertThat(message.getPayload()).containsEntry("DEPTH", 0);
+        Job message = new ObjectMapper().readValue(responseString, Job.class);
+        assertThat(message.getUrl()).isEqualTo("www.example.com");
+        assertThat(message.getDepth()).isEqualTo(0);
 
         verify(jobService, Mockito.times(1)).createJob(Mockito.any());
+    }
 
+    @Test
+    void createJob_whenDuplicated_shouldReturnError() throws Exception {
+        String content = """
+                {
+                "url": "www.example.com",
+                "depth": 0
+                }
+                """;
+
+        when(jobService.createJob(any(Job.class))).
+                thenReturn((Optional.empty()));
+
+        String responseString = mvc.perform(MockMvcRequestBuilders.post("/jobs/add").
+                        contentType(MediaType.APPLICATION_JSON).
+                        content(content)).
+                andExpect(status().is(429)).
+                andReturn().
+                getResponse().
+                getContentAsString();
+
+        verify(jobService, Mockito.times(1)).createJob(Mockito.any());
+        assertThat(responseString).isEmpty();
     }
 
     @Test
@@ -72,7 +92,6 @@ class JobControllerTest {
         String responseText = mvc.perform(MockMvcRequestBuilders.post("/jobs/stop")).
                 andExpect(status().isOk()).
                 andExpect(content().string("All jobs stopped")).andReturn().getResponse().getContentAsString();
-
 
         verify(jobService, Mockito.times(1)).stopAllProcessors();
         assertThat(responseText).isEqualTo("All jobs stopped");

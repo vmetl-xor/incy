@@ -1,6 +1,6 @@
 package com.vmetl.crawler;
 
-import com.vmetl.incy.cache.RefsCache;
+import com.vmetl.incy.cache.VisitedRefsCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -15,7 +15,7 @@ public class Initializer implements InitializingBean {
     private static final Logger LOG = LoggerFactory.getLogger(Initializer.class);
 
     @Autowired
-    Map<String,RefsCache> caches;
+    Map<String, VisitedRefsCache> caches;
 
    @Override
     public void afterPropertiesSet() throws Exception {

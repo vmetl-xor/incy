@@ -1,6 +1,5 @@
 package com.vmetl.incy.cache;
 
-import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -13,14 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Primary
-public class RedisVisitedRefsCache implements RefsCache {
+public class RedisVisitedVisitedRefsCache implements VisitedRefsCache {
     public static final String REFS_VISITED = "refs:visited";
     private final RedisTemplate<String, String> redisTemplate;
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(RedisVisitedRefsCache.class);
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(RedisVisitedVisitedRefsCache.class);
     private final Set<String> cache = ConcurrentHashMap.newKeySet();
 
     @Autowired
-    public RedisVisitedRefsCache(RedisTemplate<String, String> redisTemplate) {
+    public RedisVisitedVisitedRefsCache(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
         SetOperations<String, String> setOps = redisTemplate.opsForSet();
         Set<String> members = setOps.members(REFS_VISITED);

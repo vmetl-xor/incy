@@ -1,7 +1,7 @@
 package com.vmetl.crawler.messaging;
 
 import com.vmetl.incy.SiteDao;
-import com.vmetl.incy.cache.RefsCache;
+import com.vmetl.incy.cache.VisitedRefsCache;
 import com.vmetl.incy.CacheAwareDbService;
 import com.vmetl.incy.messaging.Message;
 import com.vmetl.incy.messaging.MessageConsumer;
@@ -25,13 +25,13 @@ public class TaskMessageConsumer implements MessageConsumer {
 
     private final MessagesService messagesService;
     private final SiteDao dbService;
-    private final RefsCache cache;
+    private final VisitedRefsCache cache;
 
     @Value("${incy.crawler.default.depth}")
     private int defaultDepth;
 
     @Autowired
-    public TaskMessageConsumer(MessagesService messagesService, CacheAwareDbService dbService, RefsCache cache) {
+    public TaskMessageConsumer(MessagesService messagesService, CacheAwareDbService dbService, VisitedRefsCache cache) {
         this.messagesService = messagesService;
         this.dbService = dbService;
         this.cache = cache;

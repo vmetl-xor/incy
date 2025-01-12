@@ -3,9 +3,12 @@ package com.vmetl.api.rest;
 
 import com.vmetl.api.rest.dto.Job;
 import com.vmetl.api.service.JobService;
-import com.vmetl.incy.messaging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/jobs")
@@ -19,15 +22,19 @@ public class JobController {
     }
 
     @PostMapping(value = "/add")
-    public Message createJob(@RequestBody Job job) {
-        return jobService.createJob(job);
+    public ResponseEntity<Job> createJob(@RequestBody Job job) {
+        Optional<Job> createdJob = jobService.createJob(job);
+
+        return createdJob.
+                map(ResponseEntity::ok).
+                orElse(ResponseEntity.status(HttpStatusCode.valueOf(429)).build());
     }
 
 
     @PostMapping(value = "/stop")
-    public String stopAll() {
+    public ResponseEntity<String> stopAll() {
         jobService.stopAllProcessors();
 
-        return "All jobs stopped";
+        return ResponseEntity.ok("All jobs stopped");
     }
 }

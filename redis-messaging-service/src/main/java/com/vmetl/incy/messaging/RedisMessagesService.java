@@ -1,6 +1,6 @@
 package com.vmetl.incy.messaging;
 
-import com.vmetl.incy.cache.RefsCache;
+import com.vmetl.incy.cache.VisitedRefsCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +24,8 @@ public class RedisMessagesService implements MessagesService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    @Autowired
-    private final RefsCache cache;
 
-    public RedisMessagesService(RefsCache cache, RedisTemplate<String, Object> redisTemplate, ChannelTopic topic) {
-        this.cache = cache;
+    public RedisMessagesService(RedisTemplate<String, Object> redisTemplate, ChannelTopic topic) {
         this.redisTemplate = redisTemplate;
         this.topic = topic;
     }
@@ -36,12 +33,6 @@ public class RedisMessagesService implements MessagesService {
     @Override
     public void sendMessage(Message message, Function<Object, Object> postAction) {
         String url = MessageUtil.getUrl(message);
-
-        if (cache.exists(url)) {
-            log.debug("Url {} has already been processed", url);
-            return;
-        }
-        else cache.add(url);
 
         RecordId recordId = redisTemplate.opsForStream().add(
                 StreamRecords.mapBacked(message.getPayload()).withStreamKey(STREAM_KEY)

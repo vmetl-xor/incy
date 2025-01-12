@@ -31,7 +31,7 @@ public class RedisTaskProcessor implements TaskProcessor {
 
     private static final String STREAM_KEY = "stream_1";
     private static final String GROUP_NAME = "mygroup";
-    private String consumerName;
+    private final String consumerName;
     private final MessageConsumer consumer;
 
     public RedisTaskProcessor(String consumerName, MessageConsumer consumer) {
