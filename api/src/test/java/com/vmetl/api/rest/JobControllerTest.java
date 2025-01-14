@@ -33,7 +33,6 @@ class JobControllerTest {
     @MockBean
     private JobService jobService;
 
-
     @Test
     void createJob_withCorrectMessage_shouldCreateNewJob() throws Exception {
         String content = """
@@ -78,7 +77,7 @@ class JobControllerTest {
         String responseString = mvc.perform(MockMvcRequestBuilders.post("/jobs/add").
                         contentType(MediaType.APPLICATION_JSON).
                         content(content)).
-                andExpect(status().is(429)).
+                andExpect(status().is(202)).
                 andReturn().
                 getResponse().
                 getContentAsString();

@@ -27,7 +27,7 @@ public class JobController {
 
         return createdJob.
                 map(ResponseEntity::ok).
-                orElse(ResponseEntity.status(HttpStatusCode.valueOf(429)).build());
+                orElse(ResponseEntity.status(HttpStatusCode.valueOf(202)).build());
     }
 
 
