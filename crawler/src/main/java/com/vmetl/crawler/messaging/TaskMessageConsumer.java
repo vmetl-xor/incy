@@ -53,8 +53,8 @@ public class TaskMessageConsumer implements MessageConsumer {
             if (shouldProcessDeeper) {
                 siteInformation.getReferences().stream().
                         filter(ref -> !cache.exists(ref)).
+                        distinct().
                         forEach(ref -> {
-
                             Message newMessage =
                                     new Message.MessageBuilder().
                                             setId(UUID.randomUUID().toString()).
@@ -63,7 +63,7 @@ public class TaskMessageConsumer implements MessageConsumer {
                                             build();
                             messagesService.
                                     sendMessage(
-                                            newMessage, o -> 0);
+                                            newMessage, o -> cache.add(ref));
                         });
             } else {
                 log.info("REACHED MAX DEPTH OF {}, terminating", MessageUtil.getCurrentRefDepth(message));

@@ -31,13 +31,13 @@ public class RedisMessagesService implements MessagesService {
     }
 
     @Override
-    public void sendMessage(Message message, Function<Object, Object> postAction) {
+    public void sendMessage(Message message, Function<Object, Object> action) {
         String url = MessageUtil.getUrl(message);
 
         RecordId recordId = redisTemplate.opsForStream().add(
                 StreamRecords.mapBacked(message.getPayload()).withStreamKey(STREAM_KEY)
         );
-        postAction.apply(url);
+        action.apply(url);
 
         log.debug("Produced message with ID: {}, url: {}", recordId.getValue(), url);
     }

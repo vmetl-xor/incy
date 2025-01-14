@@ -9,18 +9,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication(scanBasePackages = {"com.vmetl.crawler", "com.vmetl.incy"})
 public class CrawlerApplication {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CrawlerApplication.class);
-
     public static void main(String[] args) {
-
-        LOG.info("STARTING THE APPLICATION");
-        ConfigurableApplicationContext context = SpringApplication.run(CrawlerApplication.class, args);
-
-//        // Start the producer
-//        SimpleTaskProducer producer = context.getBean(SimpleTaskProducer.class);
-//        producer.produceMessages();
-
-        LOG.info("APPLICATION FINISHED");
+        SpringApplication.run(CrawlerApplication.class, args);
     }
 
 }

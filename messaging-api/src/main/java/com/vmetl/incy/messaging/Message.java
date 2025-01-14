@@ -6,11 +6,8 @@ import java.util.Map;
 public class Message {
     public static final String URL = "URL";
     public static final String DEPTH = "DEPTH";
-    private String id;
-    private Map<String, Object> payload;
-
-    public Message() {
-    }
+    private final String id;
+    private final Map<String, Object> payload;
 
     private Message(MessageBuilder builder) {
         this.id = builder.id;
