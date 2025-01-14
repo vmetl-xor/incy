@@ -23,18 +23,18 @@ public class RedisTaskProcessor implements TaskProcessor {
 
     Logger log = LoggerFactory.getLogger(RedisTaskProcessor.class);
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ProcessorsRunningState runningState;
 
-    @Autowired
-    private ProcessorsRunningState runningState;
-
-    private static final String STREAM_KEY = "stream_1";
+    private static final String STREAM_KEY = "stream_1"; // todo externalize
     private static final String GROUP_NAME = "mygroup";
     private final String consumerName;
     private final MessageConsumer consumer;
 
-    public RedisTaskProcessor(String consumerName, MessageConsumer consumer) {
+    public RedisTaskProcessor(RedisTemplate<String, Object> redisTemplate, ProcessorsRunningState runningState,
+                              String consumerName, MessageConsumer consumer) {
+        this.redisTemplate = redisTemplate;
+        this.runningState = runningState;
         this.consumerName = consumerName;
         this.consumer = consumer;
     }

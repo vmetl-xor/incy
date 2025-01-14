@@ -1,8 +1,10 @@
 package com.vmetl.incy.messaging;
 
+import com.vmetl.incy.ProcessorsRunningState;
 import com.vmetl.incy.task.TaskProcessor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ExecutorService;
