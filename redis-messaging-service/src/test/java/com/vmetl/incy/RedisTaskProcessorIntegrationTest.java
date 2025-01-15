@@ -19,6 +19,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.GenericContainer;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
@@ -49,8 +52,13 @@ class RedisTaskProcessorIntegrationTest {
     void setUp() {
     }
 
+    @AfterAll
+    static void afterAll() {
+        redisContainer.stop();
+    }
+
     @Test
-    void whenMessageSent_shouldProcessTask() throws InterruptedException {
+    void whenMessageSent_shouldProcessTask() throws InterruptedException, ExecutionException, TimeoutException {
 
         messagesService.sendMessage(
                 new Message.MessageBuilder().
@@ -63,16 +71,18 @@ class RedisTaskProcessorIntegrationTest {
         RedisTaskProcessor taskProcessor = new RedisTaskProcessor(redisTemplate,
                                         runningState, "test-consumer", messageConsumer);
 
-        CompletableFuture.runAsync(taskProcessor);
-        Thread.sleep(1_000);
-        runningState.stop();
+        CompletableFuture.runAsync(runningState::stop, CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS));
 
-        ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
-        verify(messageConsumer, times(1)).consume(messageCaptor.capture());
+        CompletableFuture.
+                runAsync(taskProcessor).thenRun(() -> {
+                    System.out.println("Task completed");
+                    ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
+                    verify(messageConsumer, times(1)).consume(messageCaptor.capture());
 
-        Message message = messageCaptor.getValue();
-        assertThat(message.getPayload()).containsKey("URL");
-        assertThat(message.getPayload()).containsValue("http://www.test.org");
+                    Message message = messageCaptor.getValue();
+                    assertThat(message.getPayload()).containsKey("URL");
+                    assertThat(message.getPayload()).containsValue("http://www.test.org");
+                }).get(3, TimeUnit.SECONDS);
     }
 
     @DynamicPropertySource
