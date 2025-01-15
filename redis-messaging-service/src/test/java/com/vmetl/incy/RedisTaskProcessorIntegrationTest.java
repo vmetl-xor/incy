@@ -69,12 +69,14 @@ class RedisTaskProcessorIntegrationTest {
 
         ProcessorsRunningState runningState = new ProcessorsRunningState();
         RedisTaskProcessor taskProcessor = new RedisTaskProcessor(redisTemplate,
-                                        runningState, "test-consumer", messageConsumer);
+                runningState, "test-consumer", messageConsumer);
 
-        CompletableFuture.runAsync(runningState::stop, CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS));
+        CompletableFuture<Void> wait = CompletableFuture.runAsync(runningState::stop,
+                CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS));
 
         CompletableFuture.
-                runAsync(taskProcessor).thenRun(() -> {
+                runAsync(taskProcessor).
+                runAfterBoth(wait, () -> {
                     System.out.println("Task completed");
                     ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
                     verify(messageConsumer, times(1)).consume(messageCaptor.capture());

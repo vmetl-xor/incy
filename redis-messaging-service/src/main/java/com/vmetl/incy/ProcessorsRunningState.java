@@ -16,13 +16,13 @@ public class ProcessorsRunningState {
 
     public boolean stop() {
         this.running = false;
-        log.info("STOP isRunning " + running);
+        log.debug("STOPPED, isRunning {} ", running);
 
         return running;
     }
 
     public boolean isRunning() {
-        log.info("isRunning " + running);
+        log.debug("isRunning {}", running);
         return running;
     }
 }
