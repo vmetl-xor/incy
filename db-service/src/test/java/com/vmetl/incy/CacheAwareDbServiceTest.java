@@ -11,9 +11,9 @@ class CacheAwareDbServiceTest {
 
     public static PostgreSQLContainer<?> postgreSQLContainer =
             new PostgreSQLContainer<>("postgres:15-alpine")
-            .withDatabaseName("testdb")
-            .withUsername("testuser")
-            .withPassword("testpass")
+//            .withDatabaseName("testdb")
+//            .withUsername("testuser")
+//            .withPassword("testpass")
             .withInitScript("initDb.sql");
 
     @BeforeAll

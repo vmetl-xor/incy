@@ -3,6 +3,8 @@ package com.vmetl.api.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmetl.api.rest.dto.Job;
 import com.vmetl.api.service.JobService;
+import com.vmetl.incy.DbMetrics;
+import com.vmetl.incy.SiteDao;
 import com.vmetl.incy.cache.VisitedRefsCache;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +38,12 @@ class JobControllerTest {
 
     @MockBean
     private VisitedRefsCache cache;
+
+    @MockBean
+    private DbMetrics dbMetrics;
+
+    @MockBean
+    private SiteDao siteDao;
 
     @Test
     void createJob_withCorrectMessage_shouldCreateNewJob() throws Exception {

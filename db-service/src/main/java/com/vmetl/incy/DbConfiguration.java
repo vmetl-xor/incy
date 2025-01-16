@@ -25,10 +25,10 @@ public class DbConfiguration {
 
     private final QueryExecutionInfoFormatter formatter = QueryExecutionInfoFormatter.showAll();
 
-    @Value("spring.datasource.url") String dataSourceUrl;
-    @Value("spring.datasource.username") String username;
-    @Value("spring.datasource.password") String password;
-    @Value("spring.datasource.driver-class-name") String driverClassName;
+    @Value("${spring.datasource.url}") String dataSourceUrl;
+    @Value("${spring.datasource.username}") String username;
+    @Value("${spring.datasource.password}") String password;
+    @Value("${spring.datasource.driver-class-name}") String driverClassName;
 
     @Bean
     public ConnectionFactory connectionFactory() {
