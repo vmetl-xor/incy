@@ -6,6 +6,7 @@ import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,10 @@ public class DbConfiguration {
 
     private final QueryExecutionInfoFormatter formatter = QueryExecutionInfoFormatter.showAll();
 
+    @Value("spring.datasource.url") String dataSourceUrl;
+    @Value("spring.datasource.username") String username;
+    @Value("spring.datasource.password") String password;
+    @Value("spring.datasource.driver-class-name") String driverClassName;
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -49,10 +54,10 @@ public class DbConfiguration {
     @Bean
     public DataSource dataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.driverClassName("org.postgresql.Driver");
-        dataSourceBuilder.url("jdbc:postgresql://localhost:5432/incy");
-        dataSourceBuilder.username("postgres");
-        dataSourceBuilder.password("postgres");
+        dataSourceBuilder.driverClassName(driverClassName);
+        dataSourceBuilder.url(dataSourceUrl);
+        dataSourceBuilder.username(username);
+        dataSourceBuilder.password(password);
 
         return dataSourceBuilder.build();
     }
