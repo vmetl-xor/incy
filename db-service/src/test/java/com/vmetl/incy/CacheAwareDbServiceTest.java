@@ -1,19 +1,17 @@
 package com.vmetl.incy;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.sql.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 class CacheAwareDbServiceTest {
@@ -65,16 +63,34 @@ class CacheAwareDbServiceTest {
 
 
     @Test
+    @Order(1)
     void testAddSite() throws SQLException {
         String expectedSiteName = "https://vmetl-incy-alpine/";
         cacheAwareDbService.addSite(expectedSiteName);
-        try(ResultSet sites = connection.createStatement().executeQuery("select * from sites where name = '" + expectedSiteName + "'")) {
+        try(ResultSet sites = connection.createStatement().
+                executeQuery("select * from sites where name = '" + expectedSiteName + "'")) {
             Assertions.assertTrue(sites.next());
             Assertions.assertFalse(sites.next()); //only one must exist
 //            assertThat(sites.getString("name")).isEqualTo(expectedSiteName);
         }
     }
-    
+
+    @Test
+    @Order(2)
+    void testGetAllStream() {
+        String name = "www.test.com";
+        cacheAwareDbService.addSite(name);
+        int siteId = cacheAwareDbService.getSiteIdByName(name).orElseThrow();
+        cacheAwareDbService.updateSiteStatistics(siteId, Map.of("one", 1));
+
+        Flux<SiteStats> siteStatsStream = cacheAwareDbService.getSiteStatsStream();
+        SiteStats expectedSiteStats1 = new SiteStats(name, (long) siteId, List.of(new WordStats("one", 1)));
+        SiteStats expectedSiteStats0 = new SiteStats("https://vmetl-incy-alpine/", 1L, List.of());
+        StepVerifier.create(siteStatsStream).
+                expectNext(expectedSiteStats0).
+                expectNext(expectedSiteStats1).expectComplete().verify();
+    }
+
     @Test
     public void testSchemaExists() throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
