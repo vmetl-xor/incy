@@ -28,7 +28,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {TestConfiguration.class})
+@SpringBootTest(classes = {MessagingTestConfiguration.class})
 class RedisTaskProcessorIntegrationTest {
 
     @MockBean
