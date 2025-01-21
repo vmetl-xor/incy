@@ -1,5 +1,6 @@
 package com.vmetl.incy;
 
+import com.vmetl.incy.metrics.db.DbMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,6 @@
-package com.vmetl.incy;
+package com.vmetl.incy.dao;
 
+import com.vmetl.incy.SiteStats;
 import reactor.core.publisher.Flux;
 
 import java.util.Map;
@@ -11,10 +12,6 @@ public interface SiteDao {
     Optional<Integer> getSiteIdByName(String siteName);
 
     void updateSiteStatistics(int siteId, Map<String, Integer> statistics);
-
-    Flux<SiteStats> getSiteStatsStream();
-
-    Flux<SiteStats> getSiteStatsByNameStream(String name);
 
     SiteStats getSiteStats(String siteName);
 }

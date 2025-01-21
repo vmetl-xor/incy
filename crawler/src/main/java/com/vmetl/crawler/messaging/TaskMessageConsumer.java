@@ -1,6 +1,6 @@
 package com.vmetl.crawler.messaging;
 
-import com.vmetl.incy.SiteDao;
+import com.vmetl.incy.dao.SiteDao;
 import com.vmetl.incy.cache.VisitedRefsCache;
 import com.vmetl.incy.CacheAwareDbService;
 import com.vmetl.incy.messaging.Message;

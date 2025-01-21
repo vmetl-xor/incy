@@ -1,8 +1,6 @@
 package com.vmetl.crawler.actuator;
 
-import com.vmetl.incy.CacheAwareDbService;
-import com.vmetl.incy.DbMetrics;
-import com.vmetl.incy.SiteDao;
+import com.vmetl.incy.metrics.db.DbMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;

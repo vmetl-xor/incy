@@ -1,6 +1,6 @@
 package com.vmetl.crawler.actuator;
 
-import com.vmetl.incy.DbMetrics;
+import com.vmetl.incy.metrics.db.DbMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;

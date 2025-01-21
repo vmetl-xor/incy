@@ -1,4 +1,4 @@
-package com.vmetl.incy;
+package com.vmetl.incy.metrics.db;
 
 import java.util.OptionalInt;
 

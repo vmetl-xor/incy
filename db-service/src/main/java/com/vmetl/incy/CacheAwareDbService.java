@@ -1,6 +1,8 @@
 package com.vmetl.incy;
 
 import com.vmetl.incy.cache.SiteNameCache;
+import com.vmetl.incy.dao.SiteDao;
+import com.vmetl.incy.dao.reactive.SiteReactiveDao;
 import com.vmetl.incy.db.SiteRepository;
 import com.vmetl.incy.db.reactive.SitesReactiveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class CacheAwareDbService implements SiteDao {
+public class CacheAwareDbService implements SiteDao, SiteReactiveDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;

@@ -1,7 +1,8 @@
 package com.vmetl.api.service;
 
-import com.vmetl.incy.SiteDao;
+import com.vmetl.incy.dao.SiteDao;
 import com.vmetl.incy.SiteStats;
+import com.vmetl.incy.dao.reactive.SiteReactiveDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -10,10 +11,12 @@ import reactor.core.publisher.Flux;
 public class SitesService {
 
     private final SiteDao dbService;
+    private final SiteReactiveDao dbReactiveService;
 
     @Autowired
-    public SitesService(SiteDao dbService) {
+    public SitesService(SiteDao dbService, SiteReactiveDao dbReactiveService) {
         this.dbService = dbService;
+        this.dbReactiveService = dbReactiveService;
     }
 
 
@@ -28,11 +31,11 @@ public class SitesService {
     }
 
     public Flux<SiteStats> getSitesStats(String namePattern) {
-        return dbService.getSiteStatsByNameStream(namePattern);
+        return dbReactiveService.getSiteStatsByNameStream(namePattern);
     }
 
     public Flux<SiteStats> getSiteStatsStream() {
-        return dbService.getSiteStatsStream();
+        return dbReactiveService.getSiteStatsStream();
     }
 
 }
