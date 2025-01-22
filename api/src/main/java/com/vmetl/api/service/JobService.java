@@ -5,6 +5,7 @@ import com.vmetl.incy.cache.VisitedRefsCache;
 import com.vmetl.incy.messaging.Message;
 import com.vmetl.incy.messaging.MessagesService;
 import com.vmetl.incy.messaging.RedisMessagesService;
+import io.micrometer.observation.annotation.Observed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class JobService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Observed
     public Optional<Job> createJob(Job job) {
         String url = job.getUrl();
 
