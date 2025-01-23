@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisMessageSubscriber implements MessageListener {
 
+    public static final String SHUTDOWN_MESSAGE = "SHUTDOWN";
     Logger log = LoggerFactory.getLogger(RedisMessageSubscriber.class);
 
     private final TaskProcessorsManager taskProcessorsManager;
@@ -21,7 +22,7 @@ public class RedisMessageSubscriber implements MessageListener {
     }
 
     public void onMessage(Message message, byte[] pattern) {
-        if (message.toString().equalsIgnoreCase("\"SHUTDOWN\"")) {
+        if (message.toString().equalsIgnoreCase(SHUTDOWN_MESSAGE)) {
             taskProcessorsManager.stopAllProcessors();
         }
 

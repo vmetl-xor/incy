@@ -5,25 +5,23 @@ import com.vmetl.incy.messaging.MessageConsumer;
 import com.vmetl.incy.task.TaskProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.connection.stream.StreamOffset;
 import org.springframework.data.redis.connection.stream.StreamReadOptions;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.connection.stream.Consumer;
+import org.springframework.data.redis.core.StreamOperations;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class RedisTaskProcessor implements TaskProcessor {
 
     Logger log = LoggerFactory.getLogger(RedisTaskProcessor.class);
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final ProcessorsRunningState runningState;
 
     private static final String STREAM_KEY = "stream_1"; // todo externalize
@@ -31,7 +29,7 @@ public class RedisTaskProcessor implements TaskProcessor {
     private final String consumerName;
     private final MessageConsumer consumer;
 
-    public RedisTaskProcessor(RedisTemplate<String, Object> redisTemplate, ProcessorsRunningState runningState,
+    public RedisTaskProcessor(RedisTemplate<String, String> redisTemplate, ProcessorsRunningState runningState,
                               String consumerName, MessageConsumer consumer) {
         this.redisTemplate = redisTemplate;
         this.runningState = runningState;
@@ -48,16 +46,16 @@ public class RedisTaskProcessor implements TaskProcessor {
         while (runningState.isRunning()) {
             try {
                 StreamOffset<String> offset = StreamOffset.create(STREAM_KEY, ReadOffset.lastConsumed());
-                List<MapRecord<String, Object, Object>> messages = redisTemplate.opsForStream()
-                        .read(consumer,
-                                options,
-                                offset);
+                StreamOperations<String, String, String> streamOperations = redisTemplate.opsForStream();
+
+                @SuppressWarnings("unchecked")
+                List<MapRecord<String, String, String>> messages =
+                        streamOperations.read(consumer, options, offset);
 
                 if (messages != null && !messages.isEmpty()) {
-                    for (MapRecord<String, Object, Object> message : messages) {
+                    for (MapRecord<String, String, String> message : messages) {
                         String messageId = message.getId().getValue();
-                        Map<String, Object> body = message.getValue().entrySet().stream().
-                                collect(Collectors.toMap(objectObjectEntry -> objectObjectEntry.getKey().toString(), Map.Entry::getValue));
+                        Map<String, String> body = message.getValue();
 
                         log.debug("{} processing message ID: {}, body: {}", consumerName, messageId, body);
 
@@ -72,7 +70,7 @@ public class RedisTaskProcessor implements TaskProcessor {
                         processMessage(newMessage);
 
                         // Acknowledge the message
-                        redisTemplate.opsForStream().acknowledge(GROUP_NAME, message);
+                        streamOperations.acknowledge(GROUP_NAME, message);
                     }
                 } else {
                     // No messages, consumer will continue blocking

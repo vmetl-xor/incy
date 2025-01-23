@@ -46,9 +46,9 @@ public class RedisVisitedVisitedRefsCache implements VisitedRefsCache {
     @Override
     public boolean add(String ref) {
         Long added = redisTemplate.opsForSet().add(REFS_VISITED, ref);
-        if ((added == null || added == 0) && !cache.contains(ref)) {
-            LOG.error("Could not add to the cache: {}", ref);
-        }
+//        if ((added == null || added == 0) && !cache.contains(ref)) {
+//            LOG.error("Could not add to the cache: {}", ref);
+//        }
         cache.add(ref);
         return (added != null && added > 0);
     }

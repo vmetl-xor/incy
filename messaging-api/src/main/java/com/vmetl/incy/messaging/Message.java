@@ -7,14 +7,14 @@ public class Message {
     public static final String URL = "URL";
     public static final String DEPTH = "DEPTH";
     private final String id;
-    private final Map<String, Object> payload;
+    private final Map<String, String> payload;
 
     private Message(MessageBuilder builder) {
         this.id = builder.id;
         this.payload = builder.payload;
     }
 
-    public Map<String, Object> getPayload() {
+    public Map<String, String> getPayload() {
         return payload;
     }
 
@@ -29,19 +29,19 @@ public class Message {
 
     public static class MessageBuilder {
         private String id;
-        private final Map<String, Object> payload = new HashMap<>();
+        private final Map<String, String> payload = new HashMap<>();
 
         public MessageBuilder setId(String id) {
             this.id = id;
             return this;
         }
 
-        public MessageBuilder addUrl(Object value) {
+        public MessageBuilder addUrl(String value) {
             payload.put(URL, value);
             return this;
         }
 
-        public MessageBuilder setPayload(Map<String, Object> payload) {
+        public MessageBuilder setPayload(Map<String, String> payload) {
             this.payload.clear();
             this.payload.putAll(payload);
 
@@ -49,7 +49,7 @@ public class Message {
         }
 
         public MessageBuilder addDepth(Object value) {
-            payload.put(DEPTH, value);
+            payload.put(DEPTH, value + "");
             return this;
         }
 

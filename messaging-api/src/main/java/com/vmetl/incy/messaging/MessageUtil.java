@@ -12,7 +12,7 @@ public class MessageUtil {
     private static final Pattern domainPatter = Pattern.compile(DOMAIN_REGEX_PATTERN);
 
     public static String getUrl(Message message) {
-        return message.getPayload().get(URL).toString();
+        return message.getPayload().get(URL);
     }
 
     /**
@@ -31,7 +31,6 @@ public class MessageUtil {
     }
 
     public static int getCurrentRefDepth(Message message) {
-        Object v = message.getPayload().get(DEPTH);
-        return (Integer) v;
+        return Integer.parseInt(message.getPayload().get(DEPTH));
     }
 }

@@ -15,7 +15,7 @@ public class ModuleConfig {
     private ProcessorsRunningState runningState;
 
     @Autowired
-    RedisTemplate<String, Object> redisTemplate;
+    RedisTemplate<String, String> redisTemplate;
 
     @Bean
     @Scope("prototype")

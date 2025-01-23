@@ -13,7 +13,7 @@ public class ConsumerGroupInitializer implements InitializingBean {
 
     private static final String GROUP_NAME = "mygroup";
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     private void initConsumerGroup() {
         try {

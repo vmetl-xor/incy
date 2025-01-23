@@ -22,10 +22,10 @@ public class RedisMessagesService implements MessagesService {
     private ChannelTopic topic;
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
 
-    public RedisMessagesService(RedisTemplate<String, Object> redisTemplate, ChannelTopic topic) {
+    public RedisMessagesService(RedisTemplate<String, String> redisTemplate, ChannelTopic topic) {
         this.redisTemplate = redisTemplate;
         this.topic = topic;
     }

@@ -39,7 +39,7 @@ public class TaskMessageConsumer implements MessageConsumer {
 
     @Override
     public void consume(Message message) {
-        log.debug("Received message: {}", message);
+        log.info("Received message: {}", message);
 
         String siteName = MessageUtil.getDomain(message);
         dbService.addSite(siteName);
@@ -66,7 +66,7 @@ public class TaskMessageConsumer implements MessageConsumer {
                                             newMessage, o -> cache.add(ref));
                         });
             } else {
-                log.info("REACHED MAX DEPTH OF {}, terminating", MessageUtil.getCurrentRefDepth(message));
+                log.info("REACHED MAX DEPTH OF {} FOR {}, terminating", MessageUtil.getCurrentRefDepth(message), MessageUtil.getUrl(message));
             }
 
             Map<String, Integer> wordStats = siteInformation.getWordsFrequency();
@@ -74,13 +74,13 @@ public class TaskMessageConsumer implements MessageConsumer {
             dbService.getSiteIdByName(siteName).
                     ifPresentOrElse(siteId -> dbService.updateSiteStatistics(siteId, wordStats),
                             () -> log.error("No site found: {}", siteName));
-//            idle();
+            idle();
         });
     }
 
     private static void idle() {
         try {
-            Thread.sleep(500);
+            Thread.sleep(5_000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

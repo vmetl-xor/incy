@@ -35,7 +35,7 @@ class RedisTaskProcessorIntegrationTest {
     private MessageConsumer messageConsumer;
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     @Autowired
     private MessagesService messagesService;
