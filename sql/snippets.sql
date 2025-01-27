@@ -1,4 +1,4 @@
-select count(*) as links from site_statistics;
+select count(*) as word_stats from site_statistics;
 select count(*) as sites from sites;
 select count(*) as words from words;
 
@@ -13,7 +13,7 @@ select s.name, w.value, ss.word_occurrences
 from sites s
          inner join public.site_statistics ss on s.id = ss.site_id
          inner join public.words w on ss.word_id = w.id
-where s.name = 'https://meta.wikimedia.org'
+-- where s.name = 'https://meta.wikimedia.org'
 order by ss.word_occurrences desc
 ;
 
@@ -21,7 +21,7 @@ select s.name, w.value, ss.word_occurrences
 from sites s
          inner join public.site_statistics ss on s.id = ss.site_id
          inner join public.words w on ss.word_id = w.id
-where w.value = 'domain'
+where w.value = 'राजकारणी'
 order by ss.word_occurrences desc
 ;
 
@@ -35,6 +35,9 @@ order by sum(ss.word_occurrences) desc
 
 
 
-select id
+select id, *
 from sites
-where name not like '%wiki%';
+where name not like '%https%';
+
+select * from words where value = 'राजकारणी'
+

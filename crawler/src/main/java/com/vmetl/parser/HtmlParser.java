@@ -1,5 +1,6 @@
 package com.vmetl.parser;
 
+import com.vmetl.crawler.fetch.UrlContent;
 import com.vmetl.incy.SiteInformation;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,16 +18,11 @@ public class HtmlParser {
 
     private static final Logger log = LoggerFactory.getLogger(HtmlParser.class);
 
-    public static Optional<SiteInformation> parse(String url) {
-        Document doc;
-        try {
-            doc = Jsoup.connect(url).get();
-        } catch (Exception e) {
-            log.error("Error parsing {}", url);
-            log.error("Error message {}", e.getMessage());
+    //todo decouple url fetch and parsing
+    public static Optional<SiteInformation> parse(UrlContent urlContent) {
 
-            return Optional.empty();
-        }
+        Document doc = urlContent.document();
+        String url = urlContent.url();
 
         SiteInformation siteInformation = new SiteInformation();
         Elements refs = doc.getElementsByTag("a");
