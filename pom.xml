@@ -30,6 +30,13 @@
         <spring-boot.version>3.3.5</spring-boot.version>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+    </dependencies>
+
     <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>

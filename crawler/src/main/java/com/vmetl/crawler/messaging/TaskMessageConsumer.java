@@ -1,6 +1,5 @@
 package com.vmetl.crawler.messaging;
 
-import com.vmetl.crawler.fetch.UrlContent;
 import com.vmetl.crawler.fetch.UrlFetch;
 import com.vmetl.incy.dao.SiteDao;
 import com.vmetl.incy.cache.VisitedRefsCache;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -59,9 +57,7 @@ public class TaskMessageConsumer implements MessageConsumer {
         dbService.addSite(siteName);
 
         urlFetch.fetchUrl(siteName).flatMap(HtmlParser::parse).
-                ifPresent(siteInformation -> {
-                    processMessage(message, siteInformation, siteName);
-                });
+                ifPresent(siteInformation -> processMessage(message, siteInformation, siteName));
     }
 
     private void processMessage(Message message, SiteInformation siteInformation, String siteName) {
@@ -73,7 +69,8 @@ public class TaskMessageConsumer implements MessageConsumer {
                     distinct().
                     forEach(ref -> sendMessage(message, ref));
         } else {
-            log.info("REACHED MAX DEPTH OF {} FOR {}, terminating", MessageUtil.getCurrentRefDepth(message), MessageUtil.getUrl(message));
+            log.info("REACHED MAX DEPTH OF {} FOR {}, terminating",
+                    MessageUtil.getCurrentRefDepth(message), MessageUtil.getUrl(message));
         }
 
         Map<String, Integer> wordStats = siteInformation.getWordsFrequency();

@@ -4,7 +4,6 @@ import com.vmetl.api.rest.dto.Job;
 import com.vmetl.incy.cache.VisitedRefsCache;
 import com.vmetl.incy.messaging.Message;
 import com.vmetl.incy.messaging.MessagesService;
-import com.vmetl.incy.messaging.RedisMessagesService;
 import io.micrometer.observation.annotation.Observed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,7 @@ import java.util.UUID;
 @Component
 public class JobService {
     private final JdbcTemplate jdbcTemplate;
-    Logger log = LoggerFactory.getLogger(RedisMessagesService.class);
+    Logger log = LoggerFactory.getLogger(JobService.class);
 
     private final MessagesService messagesService;
     private final VisitedRefsCache cache;

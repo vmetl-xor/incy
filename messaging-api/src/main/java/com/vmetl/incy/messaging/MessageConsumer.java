@@ -6,4 +6,5 @@ public interface MessageConsumer {
     void consume(Message message);
 
     Mono<Void> consumeAsync(Message message);
+
 }

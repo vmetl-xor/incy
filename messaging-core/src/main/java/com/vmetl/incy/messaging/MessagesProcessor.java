@@ -1,6 +1,8 @@
 package com.vmetl.incy.messaging;
 
 import com.vmetl.incy.task.TaskProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,7 @@ import java.util.concurrent.Executors;
 @Component
 public class MessagesProcessor {
 
+    Logger log = LoggerFactory.getLogger(MessagesProcessor.class);
     private static final int NUMBER_OF_CONSUMERS = 10;
 
     @Autowired

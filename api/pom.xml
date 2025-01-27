@@ -24,6 +24,11 @@
         </dependency>
         <dependency>
             <groupId>com.vmetl</groupId>
+            <artifactId>kafka-messaging-service</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmetl</groupId>
             <artifactId>redis-messaging-service</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
