@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Map;
 import java.util.UUID;
@@ -47,7 +48,7 @@ public class TaskMessageConsumer implements MessageConsumer {
 
     @Override
     public Mono<Void> consumeAsync(Message message) {
-        return Mono.fromRunnable(() -> consumeMessage(message));
+        return Mono.<Void>fromRunnable(() -> consumeMessage(message)).subscribeOn(Schedulers.boundedElastic());
     }
 
     private void consumeMessage(Message message) {
@@ -78,7 +79,7 @@ public class TaskMessageConsumer implements MessageConsumer {
         dbService.getSiteIdByName(siteName).
                 ifPresentOrElse(siteId -> dbService.updateSiteStatistics(siteId, wordStats),
                         () -> log.error("No site found: {}", siteName));
-        idle();
+//        idle();
     }
 
     private void sendMessage(Message message, String ref) {

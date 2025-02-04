@@ -28,7 +28,6 @@ public class KafkaTaskProcessor implements TaskProcessor {
     @Override
     public void run() {
         kafkaReceiver.receive().
-                subscribeOn(Schedulers.boundedElastic()).
                 doOnNext(record -> {
                     String value = record.value();
                     String key = record.key();
@@ -47,8 +46,10 @@ public class KafkaTaskProcessor implements TaskProcessor {
                     }
                     return message;
                 }).
-                publishOn(Schedulers.boundedElastic()). //todo make all steps using reactive approach
-                flatMap(message -> consumer.consumeAsync(message).thenReturn(message)).
+                //publishOn(Schedulers.boundedElastic()). //todo make all steps using reactive approach
+                flatMap(message -> consumer.consumeAsync(message).
+
+                thenReturn(message)).
                 subscribe();
     }
 }

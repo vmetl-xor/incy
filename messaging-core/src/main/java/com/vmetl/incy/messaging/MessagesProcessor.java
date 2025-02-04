@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 public class MessagesProcessor {
 
     Logger log = LoggerFactory.getLogger(MessagesProcessor.class);
-    private static final int NUMBER_OF_CONSUMERS = 10;
+    private static final int NUMBER_OF_CONSUMERS = 1;
 
     @Autowired
     public MessagesProcessor(MessageConsumer messageConsumer, ObjectProvider<TaskProcessor> taskProcessorProvider) {
