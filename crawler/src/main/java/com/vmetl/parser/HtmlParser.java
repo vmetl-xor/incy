@@ -40,6 +40,11 @@ public class HtmlParser {
                         collect(Collectors.toMap(word -> word, word -> 1, Integer::sum, HashMap::new));
         siteInformation.addAllWordFrequency(wordsCount);
 
+        if (wordsCount.isEmpty()) {
+            log.warn("No words for site {}", urlContent.url());
+
+            return Optional.empty();
+        }
 
         return Optional.of(siteInformation);
     }

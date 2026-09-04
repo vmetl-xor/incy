@@ -1,11 +1,15 @@
 package com.vmetl.incy;
 
 import com.vmetl.incy.cache.SiteNameCache;
+import com.vmetl.incy.cache.VisitedRefsLocalCache;
 import com.vmetl.incy.dao.SiteDao;
 import com.vmetl.incy.dao.reactive.SiteReactiveDao;
 import com.vmetl.incy.db.SiteRepository;
 import com.vmetl.incy.db.reactive.SitesReactiveRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class CacheAwareDbService implements SiteDao, SiteReactiveDao {
+    private static final Logger LOG = LoggerFactory.getLogger(CacheAwareDbService.class);
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -157,9 +162,14 @@ public class CacheAwareDbService implements SiteDao, SiteReactiveDao {
 
         String fetchSql = "SELECT value, id FROM words WHERE value IN (:words)";
 
-        namedParameterJdbcTemplate.query(fetchSql, params, rs -> {
-            wordToIdMap.put(rs.getString("value"), rs.getInt("id"));
-        });
+        try {
+            namedParameterJdbcTemplate.query(fetchSql, params, rs -> {
+                wordToIdMap.put(rs.getString("value"), rs.getInt("id"));
+            });
+        } catch (Exception e) {
+            LOG.error("Error occurred during SQL, parameter words: " + String.join("", words));
+            throw new RuntimeException(e);
+        }
     }
 
 }

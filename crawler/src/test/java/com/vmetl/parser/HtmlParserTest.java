@@ -10,7 +10,8 @@ class HtmlParserTest {
 
     @Test
     void parse() {
-        String url = "https://donate.wikimedia.org";
+        String url = "https://www.chromium.org";
+//        String url = "https://donate.wikimedia.org";
         Optional<UrlContent> urlContent = new JsoupUrlFetch().fetchUrl(url);
         HtmlParser.parse(urlContent.orElseThrow());
     }
