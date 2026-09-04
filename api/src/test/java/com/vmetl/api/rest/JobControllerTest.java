@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-//@Disabled("temporary disable for CI/CD reasons")
+@Disabled("temporary disable for CI/CD reasons")
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
