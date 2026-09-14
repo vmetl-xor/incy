@@ -2,8 +2,8 @@ package com.vmetl.crawler.actuator;
 
 import com.vmetl.incy.metrics.db.DbMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.health.contributor.Health;
+import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,6 +18,6 @@ public class SomeHealthIndicator implements HealthIndicator {
 
     @Override
     public Health health() {
-        return Health.up().withDetail("words",dbMetrics.wordsCount().orElse(0)).build();
+        return Health.up().withDetail("words", dbMetrics.wordsCount().orElse(0)).build();
     }
 }
