@@ -29,7 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
-@Disabled("temporary disable for CI/CD reasons")
+//@Disabled("temporary disable for CI/CD reasons")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {MessagingTestConfiguration.class})
 class RedisTaskProcessorIntegrationTest {

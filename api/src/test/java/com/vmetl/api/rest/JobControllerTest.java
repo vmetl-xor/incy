@@ -3,20 +3,12 @@ package com.vmetl.api.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmetl.api.rest.dto.Job;
 import com.vmetl.api.service.JobService;
-import com.vmetl.incy.dao.reactive.SiteReactiveDao;
-import com.vmetl.incy.metrics.db.DbMetrics;
-import com.vmetl.incy.dao.SiteDao;
-import com.vmetl.incy.cache.VisitedRefsCache;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -28,28 +20,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Disabled("temporary disable for CI/CD reasons")
-@ExtendWith(SpringExtension.class)
-@AutoConfigureMockMvc
-@SpringBootTest
+@WebMvcTest(JobController.class)
 class JobControllerTest {
     @Autowired
     private MockMvc mvc;
 
     @MockitoBean
     private JobService jobService;
-
-    @MockitoBean
-    private VisitedRefsCache cache;
-
-    @MockitoBean
-    private DbMetrics dbMetrics;
-
-    @MockitoBean
-    private SiteDao siteDao;
-
-    @MockitoBean
-    private SiteReactiveDao siteReactiveDao;
 
     @Test
     void createJob_withCorrectMessage_shouldCreateNewJob() throws Exception {
